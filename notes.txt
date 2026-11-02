@@ -1,0 +1,6 @@
+Fadenpendel Projekt
+
+Kräfte, Energie, Geschwindigkeit, Zeit, Periodendauer und Frequenz anzeigen.
+
+Kraftpfeile Einzeichenen.
+

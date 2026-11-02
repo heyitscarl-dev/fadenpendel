@@ -4,3 +4,4 @@ Kräfte, Energie, Geschwindigkeit, Zeit, Periodendauer und Frequenz anzeigen.
 
 Kraftpfeile Einzeichenen.
 
+x(t) und y(t) plotten, mit Berücksichtigung der anderen Physikalischen Größen

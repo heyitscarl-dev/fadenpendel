@@ -1,31 +1,40 @@
-Fadenpendel Projekt
+# Fadenpendel Projekt
+## Features (Geplant)
 
-Kräfte, Energie, Geschwindigkeit, Zeit, Periodendauer und Frequenz anzeigen.
+- Kräftepfeile
+- Energie
+- Geschwindigkeit
+- Zeit
+- Periodendauer
+- Frequenz
 
-Kraftpfeile Einzeichenen.
+- x(t) und y(t) plotten, mit Berücksichtigung der anderen Physikalischen Größen
 
-x(t) und y(t) plotten, mit Berücksichtigung der anderen Physikalischen Größen
+## Notizen
 
-t = Definierter Wert (Läuft ab start)
+- t als fortlaufender Wert ab Start
 
------Definitions Werte-----
+---
+
+## Größen und Formeln
+
 m = Definierter Wert
+
 l = Definierter Wert
+
 g = Definierter Wert
+
 Amplitude = Definierter Wert
+
 Startauslenkung = Definierter Wert
 
------Periode und Frequenz-----
 T =  2pi*Wurzel(l/g)
+
 f = 1/T
 
------Geschwindigkeiten-----
 Winkelgeschwindigkeit = Wurzel(g/l)
-
 Bahngeschwindigkeit = Winkelgeschwindigkeit * r
 
-
------Coordinaten-----
 y(t) =  Auslenkung*sin(Wurzel(l/g)*t+Startauslenkung)
 Potenzielle Energie = m*g*y(t)
 

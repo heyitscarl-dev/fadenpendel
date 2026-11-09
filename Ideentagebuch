@@ -1,3 +1,10 @@
-Montag 2.11.2026
+Montag der 2.11.2026
 An unserem ersten Projekttag haben wir uns zusammengesetzt und uns überlegt, für welche Art von Projekt wir uns entscheiden. Wir habern uns vorläufig dafür entschieden, erstmal eine Simulation eines Federpendels zu bauen, um danach darüber nachzudenken, was wir genau simulieren wollen.
 
+
+Freitag der 6.11.2026
+Am Freitag ist der Informatikuntericht ausgefallen, aber wir haben trotzdem weiter an dem Projekt gearbeitet. Tjorve hat eine Funktion entwickelt, mit welcher wir x(t) berechnen können. Außerdem haben wir weiter an unserer Presentation gearbeitet um am Ende bei der Porejektpresentation unseren Ideenverlauf und unsere Arbeit so gut wie möglich darzustellen.
+
+
+Montag der 09.11.2026
+Zu Beginn der Stunde hat Bennet einen kleinen Vortrag über die Ergebnisse aus seinem Gespräch mit Herr Dorn vorgetragen. Er hat uns mithilfe von Frau Rosinowsky erklärt, dass wir OOP anwenden können, indem wir alle Objekte die projiziert werden, als einzelne Klassen darstellen können, die dann mit dem Variablen Fg & m von dem jeweiligen spezifischen Objekt, alle anderen wichtigen Variablen berechnen. Außerdem hat Herr Dorn den Tipp gegeben, zuerst irgendeine in 2D fallende Kugel zu simulieren und dann von dort aus die verschiedenen Kräfte die auf das Objekt wirken zu verändern und so zu simulieren, dass ein Fadenpendel entsteht. 

@@ -30,6 +30,7 @@
 ### Geschwindigkeiten
 - Winkelgeschwindigkeit = Wurzel(g/l)
 - Bahngeschwindigkeit = Winkelgeschwindigkeit * r
+- v = Fresultierend * t
 
 ### Auslenkung
 - y(t) =  Amplitude * sin(Wurzel(l/g) * t + Startauslenkung)
@@ -43,5 +44,7 @@
 - Fg = m * g
 - Ftan = sin(phi) * l
 - Frück = -m * g * sin(phi) = -((m * g)/l) * s {mit s = l * phi [Bogenlänge]}
-- Fr = Fz - Fg
+- Fresulttierend = Fz - Fg {Alle Kräfte aufaddiert, später evnt auch noch Reibung usw.}
 - Fz = m * v^2/r  // Fz = m * Winkelgeschwindigkeit * r
+- 
+  

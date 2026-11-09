@@ -43,3 +43,14 @@ Potenzielle Energie = m * g * y(t)
 Winkel Amplitude: arcsin(Amplitude/länge)
 
 x(t) = Winkel Amplitude  * cos(Wurzel(g/l) * t)
+
+### Kräfte
+
+F = m * a
+Fg = m * g
+
+Ftan = sin(phi) * l
+Frück = -m * g * sin(phi) = -((m * g)/l) * s {mit s = l * phi [Bogenlänge]}
+
+Fr = Fz - Fg
+Fz = m * v^2/r  // Fz = m * Winkelgeschwindigkeit * r

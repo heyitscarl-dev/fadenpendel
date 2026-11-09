@@ -37,7 +37,9 @@ Winkelgeschwindigkeit = Wurzel(g/l)
 Bahngeschwindigkeit = Winkelgeschwindigkeit * r
 
 ### Auslenkung
-y(t) =  Auslenkung * sin(Wurzel(l/g) * t + Startauslenkung)
+y(t) =  Amplitude * sin(Wurzel(l/g) * t + Startauslenkung)
 Potenzielle Energie = m * g * y(t)
 
-x(t) = ???
+Winkel Amplitude: arcsin(Amplitude/länge)
+
+x(t) = Winkel Amplitude  * cos(Wurzel(g/l) * t)

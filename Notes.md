@@ -50,6 +50,7 @@ F = m * a
 Fg = m * g
 
 Ftan = sin(phi) * l
+
 Frück = -m * g * sin(phi) = -((m * g)/l) * s {mit s = l * phi [Bogenlänge]}
 
 Fr = Fz - Fg

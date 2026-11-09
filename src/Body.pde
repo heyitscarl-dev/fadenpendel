@@ -9,6 +9,10 @@ class Body {
   Body(float mass, float radius) {
     this.mass = mass;
     this.radius = radius;
+    
+    this.forces = new ArrayList();
+    this.velocity = new PVector(0, 0);
+    this.position = new PVector(0, 0);
   }
   
   void setPosition(PVector updated) {

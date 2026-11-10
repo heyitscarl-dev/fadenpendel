@@ -12,9 +12,9 @@ class Camera {
 
   void enter() {
     pushMatrix();
-    translate(width / 2, height / 2);  // put the origin in the screen centre
-    scale(zoom, -zoom);                        // zoom around that centre
-    translate(-x, -y);                  // move the world opposite to the camera
+    translate(width / 2, height / 2);  // den Ursprung auf die Bildmitte setzen
+    scale(zoom, -zoom);
+    translate(-x, -y);
   }
   
   void strokeWeight(float w) {

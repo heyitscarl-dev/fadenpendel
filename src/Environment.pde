@@ -1,10 +1,12 @@
 class Environment {
   float gravity;       // e.g. 9,81 m/s^2
   ArrayList<Body> bodies;
+  ArrayList<Spring> springs;
   
   Environment(float gravity) {
     this.gravity = gravity;
     this.bodies = new ArrayList();
+    this.springs = new ArrayList();
   }
   
   Environment() {  // overload standard constructur with defaults.
@@ -15,6 +17,11 @@ class Environment {
     this.bodies.add(body);
     return this.bodies.size() - 1; 
   }
+
+  int addSpring(Spring spring) {
+    this.springs.add(spring);
+    return this.springs.size() - 1;
+  }
   
   Body getBody(int index) {
     return this.bodies.get(index);
@@ -22,5 +29,9 @@ class Environment {
   
   ArrayList<Body> getBodies() {
     return this.bodies;
+  }
+
+  ArrayList<Spring> getSprings() {
+    return this.springs;
   }
 }

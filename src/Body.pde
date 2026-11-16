@@ -5,18 +5,25 @@ class Body {
   PVector position;
   PVector velocity;
   ArrayList<PVector> forces;
-  
-  Body(float mass, float radius) {
+  public boolean fixed;
+
+  Body(float mass, float radius, boolean fixed) {
     this.mass = mass; //Masse Definieren
     this.radius = radius; //Groesse Definieren
     
     this.forces = new ArrayList();
     this.velocity = new PVector(0, 0);
     this.position = new PVector(0, 0);
+
+    this.fixed = fixed;
   }
   
   void setPosition(PVector updated) {
     this.position = updated;
+  }
+
+  void setVelocity(PVector updated) {
+    this.velocity = updated;
   }
   
   void move(PVector delta) {

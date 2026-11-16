@@ -31,7 +31,6 @@ void draw() {
     PVector force = spring.force(); // von a -> b;
     spring.b.applyForce(force);
     spring.a.applyForce(PVector.mult(force, -1));
-    draw_spring(spring);
   }
 
   for (Body body : env.getBodies()) {    
@@ -65,11 +64,17 @@ void draw() {
     
     // Neue Position
     body.position = body.position.add(dp);
-    
-    draw_body(body);
   }
+
+  for (Spring s : env.getSprings()) {
+    draw_spring(s);
+  }
+
+  for (Body b : env.getBodies()) {
+    draw_body(b);
+  }
+
   last = now;
-  
   cam.leave();
 }
 

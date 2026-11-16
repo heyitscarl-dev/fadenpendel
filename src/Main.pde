@@ -6,7 +6,7 @@ float last;
 void setup() {
   size(1280, 800);
   
-  Body body = new Body(1.0, 2);
+  Body body = new Body(1.0, 1);
   body.setPosition(new PVector(0, 0));
   env.addBody(body);
   
@@ -17,10 +17,10 @@ void draw() {
   cam.enter();
   background(255, 255, 255);
 
+  float now = millis();
+  float dt = (now - last) / 1000.0;  // vergangene Zeit in s
+  
   for (Body body : env.getBodies()) {
-    float now = millis();
-    float dt = (now - last) / 1000.0;  // vergangene Zeit in s
-    
     // Kräfte
     body.forces.add(new PVector(0.0, -env.gravity * body.mass));
     
@@ -30,18 +30,20 @@ void draw() {
       res = res.add(f);
     }
     
+    body.forces.clear();
+
     // Beschleunigung
     PVector a = res.div(body.mass);
     
     PVector dv = a.mult(dt);
     body.velocity = body.velocity.add(dv);
     
-    PVector dp = body.velocity.mult(dt);
+    PVector dp = PVector.mult(body.velocity, dt);
     body.position = body.position.add(dp);
     
     draw_body(body);
-    last = now;
   }
+  last = now;
   
   cam.leave();
 }

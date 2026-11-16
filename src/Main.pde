@@ -20,11 +20,11 @@ void draw() {
   float now = millis();
   float dt = (now - last) / 1000.0;  // vergangene Zeit in s
   
-  for (Body body : env.getBodies()) {
+  for (Body body : env.getBodies()) {    
     // Kräfte
-    body.forces.add(new PVector(0.0, -env.gravity * body.mass));
+    body.forces.add(new PVector(0.0, -env.gravity * body.mass)); // Gewichtskraft
     
-    // resultierende Kraft berechnen 
+    // Resultierende Kraft berechnen 
     PVector res = new PVector(0.0, 0.0);
     for (PVector f : body.forces) {
       res = res.add(f);
@@ -35,10 +35,16 @@ void draw() {
     // Beschleunigung
     PVector a = res.div(body.mass);
     
+    // Geschwindigkeits aenderung
     PVector dv = a.mult(dt);
+
+    //Geschwindigkeits aenderung auf Geschwindigkeit addieren
     body.velocity = body.velocity.add(dv);
     
+    // Zurueckgelegte Strecke
     PVector dp = PVector.mult(body.velocity, dt);
+    
+    // Neue Position
     body.position = body.position.add(dp);
     
     draw_body(body);
@@ -51,5 +57,6 @@ void draw() {
 void draw_body(Body body) {
   color(255, 0, 0);
   cam.strokeWeight(1);
-  circle(body.position.x, body.position.y, body.radius);
+  circle(body.position.x, body.position.y, body.radius * 2);
+  
 }

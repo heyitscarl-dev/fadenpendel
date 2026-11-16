@@ -13,6 +13,7 @@
 ## Notizen
 
 - t als fortlaufender Wert ab Start
+- Länge und Auslenkung miteinander koppeln, um Feder Ausraster zu vermeiden
 
 ## Größen und Formeln
 

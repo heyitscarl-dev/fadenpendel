@@ -13,6 +13,8 @@
 ## Notizen
 
 - t als fortlaufender Wert ab Start
+- Auslenkung und Feder länge miteinander koppeln
+- Kraftpfeile Einzeichnen -> dafür Kraftmaßstab und dann die Vektoren malen
 
 ## Größen und Formeln
 

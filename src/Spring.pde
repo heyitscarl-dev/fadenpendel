@@ -4,8 +4,9 @@ class Spring {
 
     Body a, b;
 
-    Spring(float stiffness, Body a, Body b) {
+    Spring(float stiffness, float length, Body a, Body b) {
         this.stiffness = stiffness;
+        this.length = length;
         this.a = a;
         this.b = b;
     }

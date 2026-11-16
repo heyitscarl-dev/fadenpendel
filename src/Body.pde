@@ -26,4 +26,8 @@ class Body {
   void applyForce(PVector force) {
     this.forces.add(force);
   }
+
+  PVector position() {
+    return position;
+  }
 }

@@ -27,7 +27,7 @@ class Spring {
     }
 
     public void draw(Camera cam) {
-        draw_text("l = " + length + "\\,\\mathrm{m}", cam);
+        draw_text("l = " + (round(length() * 10) / 10.0) + "\\,\\mathrm{m}", cam);
         if (this.stiffness >= 500) {
             draw_as_line(cam);
             return;

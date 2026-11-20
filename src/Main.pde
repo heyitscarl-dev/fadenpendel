@@ -120,3 +120,12 @@ void draw_body(Body body) {
   cam.strokeWeight(1);
   circle(body.position.x, body.position.y, body.radius * 2);
 }
+
+void mouseDragged() {
+  cam.handleDrag();
+}
+
+void mouseWheel(MouseEvent e) {
+  float c = e.getCount();
+  cam.zoom *= pow(1.05, -c);
+}

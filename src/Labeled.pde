@@ -1,0 +1,3 @@
+interface Labeled {
+    PVector getAttachmentPoint();
+}

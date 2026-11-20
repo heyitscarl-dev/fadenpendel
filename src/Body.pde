@@ -5,6 +5,7 @@ class Body {
   PVector position;
   PVector velocity;
   ArrayList<PVector> forces;
+  ArrayList<PVector> lastForces;
   public boolean fixed;
 
   Body(float mass, float radius, boolean fixed) {
@@ -12,6 +13,7 @@ class Body {
     this.radius = radius; //Groesse Definieren
     
     this.forces = new ArrayList();
+    this.lastForces = new ArrayList();
     this.velocity = new PVector(0, 0);
     this.position = new PVector(0, 0);
 
@@ -36,5 +38,10 @@ class Body {
 
   PVector position() {
     return position;
+  }
+
+  void clearForces() {
+    lastForces = new ArrayList<PVector>(forces);
+    forces.clear();
   }
 }

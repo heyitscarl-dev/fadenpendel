@@ -55,8 +55,33 @@ void draw() {
     draw_body(b);
   }
 
+  for (Body b : env.getBodies()) {
+    for (PVector f : b.lastForces) {
+      draw_arrow(b.position, PVector.mult(f, 0.1));
+    }
+  }
+
   last = now;
   cam.leave();
+}
+
+void draw_arrow(PVector origin, PVector vector) {
+  float len = vector.mag();
+  if (len < 1e-6) return;
+
+  PVector to = PVector.add(origin, vector);
+  PVector dir = PVector.div(vector, len);
+  PVector perp = new PVector(-dir.y, dir.x);
+
+  float head = min(0.2, len * 0.3);
+  PVector base = PVector.sub(to, PVector.mult(dir, head));
+
+  stroke(0, 0, 0);
+  cam.strokeWeight(1);
+  line(origin.x, origin.y, to.x, to.y);
+  line(to.x, to.y, base.x + perp.x * head * 0.5, base.y + perp.y * head * 0.5);
+  line(to.x, to.y, base.x - perp.x * head * 0.5, base.y - perp.y * head * 0.5);
+  stroke(0);
 }
 
 void tick(float dt) {
@@ -68,8 +93,7 @@ void tick(float dt) {
 
   for (Body body : env.getBodies()) {    
     if (body.fixed) {
-      draw_body(body);
-      body.forces.clear();
+      body.clearForces();
       continue;
     }
 
@@ -82,7 +106,7 @@ void tick(float dt) {
       res = res.add(f);
     }
     
-    body.forces.clear();
+    body.clearForces();
 
     // Beschleunigung
     PVector a = res.div(body.mass);

@@ -9,6 +9,11 @@ class Camera {
 
   HashMap<String, TeXIcon> cache = new HashMap<String, TeXIcon>();
 
+  void drawLabel(String text, Labeled labeled) {
+    PVector attach = labeled.getAttachmentPoint();
+    latex(text, attach.x, attach.y);
+  }
+
   void latex(String tex, float x, float y) {
     int alignX = LEFT;
     int alignY = BOTTOM;

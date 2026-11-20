@@ -16,6 +16,7 @@ Camera cam = new Camera();
 float last;
 
 boolean running = true;
+boolean doStep = false;
 
 void setup() {
   size(1280, 800);
@@ -29,7 +30,7 @@ void setup() {
   dragged.setPosition(new PVector(-2.5, 2.5));
   env.addBody(dragged);
 
-  Spring spring = new Spring(50.0, body, dragged);
+  Spring spring = new Spring(5.0, body, dragged);
   env.addSpring(spring);
   
   last = millis();
@@ -72,10 +73,12 @@ void draw() {
   textSize(12.5);
   textAlign(LEFT, BASELINE);
   text("[Space] to pause", 30, height - 30);
+  text("[Enter] to step", 30, height - 45);
 }
 
 void tick(float dt) {
-  if (!running) return;
+  if (!running && !doStep) return;
+  if (doStep) doStep = false;
 
   for (Spring spring : env.getSprings()) {
     Force[] forces = spring.forces(new String[]{
@@ -144,5 +147,9 @@ void mouseWheel(MouseEvent e) {
 void keyPressed() {
   if (key == ' ') {
     running = !running;
+  }
+
+  if (!running && keyCode == ENTER) {
+    doStep = true;
   }
 }

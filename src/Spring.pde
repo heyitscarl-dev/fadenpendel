@@ -1,4 +1,6 @@
 class Spring {
+    public static final int PEAKS_PER_DISTANCE = 2;
+
     float stiffness;
     float length;
 
@@ -33,10 +35,36 @@ class Spring {
     }
 
     private void draw_as_spring(Camera cam) {
+        int steps = 20;
+        float amplitude = 0.2;
+
+        PVector delta = PVector.sub(b.position, a.position);
+        float len = PVector.dist(b.position, a.position);
+
+        float nx = -delta.y / len;
+        float ny = delta.x / len;
+
         beginShape();
         vertex(a.position.x, a.position.y);
 
-        // ...
+        for (int i = 0; i < steps; i++) {
+            float t = i / float(steps);
+            float bx = lerp(a.position.x, b.position.x, t);
+            float by = lerp(a.position.y, b.position.y, t);
+
+            float side = (i % 2 == 1) ? 1 : -1;
+            float vx, vy;
+
+            if (i < 2 || i >= (steps - 2)) {
+                vx = bx;
+                vy = by;
+            } else {
+                vx = bx + nx * amplitude * side;
+                vy = by + ny * amplitude * side;
+            }
+
+            vertex(vx, vy);
+        }
 
         vertex(b.position.x, b.position.y);
         endShape();

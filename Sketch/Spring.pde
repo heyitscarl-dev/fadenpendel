@@ -59,6 +59,8 @@ class Spring implements Labeled {
     }
 
     private void draw_as_spring(Camera cam) {
+        cam.strokeWeight(1);
+
         int steps = int(5 * length);
         float amplitude = 0.2;
 

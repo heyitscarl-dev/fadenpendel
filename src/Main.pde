@@ -7,6 +7,7 @@
    sodass die Simulation unabhängig von der Framerate ist.
  */
 final float STEP = 1.0 / 240.0;
+final float FORCE_SCALE = 0.075;
 float accumulator = 0.0;
 
 Environment env = new Environment();
@@ -56,8 +57,8 @@ void draw() {
   }
 
   for (Body b : env.getBodies()) {
-    for (PVector f : b.lastForces) {
-      draw_arrow(b.position, PVector.mult(f, 0.1));
+    for (Force f : b.lastForces) {
+      f.scaled(FORCE_SCALE).draw(cam);
     }
   }
 
@@ -65,30 +66,15 @@ void draw() {
   cam.leave();
 }
 
-void draw_arrow(PVector origin, PVector vector) {
-  float len = vector.mag();
-  if (len < 1e-6) return;
-
-  PVector to = PVector.add(origin, vector);
-  PVector dir = PVector.div(vector, len);
-  PVector perp = new PVector(-dir.y, dir.x);
-
-  float head = min(0.2, len * 0.3);
-  PVector base = PVector.sub(to, PVector.mult(dir, head));
-
-  stroke(0, 0, 0);
-  cam.strokeWeight(1);
-  line(origin.x, origin.y, to.x, to.y);
-  line(to.x, to.y, base.x + perp.x * head * 0.5, base.y + perp.y * head * 0.5);
-  line(to.x, to.y, base.x - perp.x * head * 0.5, base.y - perp.y * head * 0.5);
-  stroke(0);
-}
-
 void tick(float dt) {
   for (Spring spring : env.getSprings()) {
-    PVector force = spring.force(); // von a -> b;
-    spring.b.applyForce(force);
-    spring.a.applyForce(PVector.mult(force, -1));
+    Force[] forces = spring.forces(new String[]{
+      "F_D",
+      "F_D"
+    });
+
+    spring.b.applyForce(forces[0]);
+    spring.a.applyForce(forces[1]);
   }
 
   for (Body body : env.getBodies()) {    
@@ -98,12 +84,16 @@ void tick(float dt) {
     }
 
     // Kräfte
-    body.forces.add(new PVector(0.0, -env.gravity * body.mass)); // Gewichtskraft
+    body.forces.add(new Force(
+      body.position,
+      new PVector(0.0, -env.gravity * body.mass),
+      "F_g"
+    )); // Gewichtskraft
 
     // Resultierende Kraft berechnen 
     PVector res = new PVector(0.0, 0.0);
-    for (PVector f : body.forces) {
-      res = res.add(f);
+    for (Force f : body.forces) {
+      res = res.add(f.getVector());
     }
     
     body.clearForces();

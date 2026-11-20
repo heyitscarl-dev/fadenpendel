@@ -4,8 +4,8 @@ class Body {
   float radius;
   PVector position;
   PVector velocity;
-  ArrayList<PVector> forces;
-  ArrayList<PVector> lastForces;
+  ArrayList<Force> forces;
+  ArrayList<Force> lastForces;
   public boolean fixed;
 
   Body(float mass, float radius, boolean fixed) {
@@ -32,7 +32,7 @@ class Body {
     this.position = this.position.add(delta);
   }
   
-  void applyForce(PVector force) {
+  void applyForce(Force force) {
     this.forces.add(force);
   }
 
@@ -41,7 +41,7 @@ class Body {
   }
 
   void clearForces() {
-    lastForces = new ArrayList<PVector>(forces);
+    lastForces = new ArrayList<Force>(forces);
     forces.clear();
   }
 }

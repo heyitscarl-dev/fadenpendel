@@ -13,7 +13,9 @@ class Spring implements Labeled {
         this.length = length();
     }
 
-    PVector force() {
+    /// Return a -> b as [0]
+    ///    and b -> a as [1]
+    Force[] forces(String[] labels) {
         PVector a = this.a.position();
         PVector b = this.b.position();
 
@@ -23,7 +25,13 @@ class Spring implements Labeled {
         float f = error * -(stiffness);
         PVector normal = PVector.sub(b, a);
         normal.normalize();
-        return PVector.mult(normal, f);
+        PVector force = PVector.mult(normal, f);
+
+        // [0]: Kraft auf b, [1]: Kraft auf a;
+        return new Force[] {
+            new Force(b, force, labels[0]),
+            new Force(a, PVector.mult(force, -1), labels[1])
+        };
     }
 
     public void draw(Camera cam) {

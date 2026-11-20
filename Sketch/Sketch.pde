@@ -103,6 +103,15 @@ void tick(float dt) {
       "|F_g|=" + env.gravity * body.mass + "\\,\\mathrm{N}"
     )); // Gewichtskraft
 
+    float velocity = body.velocity.mag();
+    float dragFactor = -0.5 * 1.204 * 0.4 * 0.0491 * velocity;
+    PVector drag = PVector.mult(body.velocity, dragFactor);
+    body.forces.add(new Force(
+      body.position,
+      drag,
+      "|F_L|=" + drag.mag() + "\\,\\mathrm{N}"
+    )); // Luftwiderstand
+
     // Resultierende Kraft berechnen 
     PVector res = new PVector(0.0, 0.0);
     for (Force f : body.forces) {

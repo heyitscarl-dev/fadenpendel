@@ -26,7 +26,7 @@ class Force implements Labeled {
         PVector dir = PVector.div(vector, len);
         PVector perp = new PVector(-dir.y, dir.x);
 
-        float head = min(0.2, len * 0.3);
+        float head = min(0.2, len * 0.2);
         PVector base = PVector.sub(to, PVector.mult(dir, head));
 
         stroke(0, 0, 0);

@@ -69,8 +69,8 @@ void draw() {
 void tick(float dt) {
   for (Spring spring : env.getSprings()) {
     Force[] forces = spring.forces(new String[]{
-      "F_D",
-      "F_D"
+      "|F_D|=%v\\,\\mathrm{N}",
+      "|F_D|=%v\\,\\mathrm{N}"
     });
 
     spring.b.applyForce(forces[0]);
@@ -87,7 +87,7 @@ void tick(float dt) {
     body.forces.add(new Force(
       body.position,
       new PVector(0.0, -env.gravity * body.mass),
-      "F_g"
+      "|F_g|=" + env.gravity * body.mass + "\\,\\mathrm{N}"
     )); // Gewichtskraft
 
     // Resultierende Kraft berechnen 

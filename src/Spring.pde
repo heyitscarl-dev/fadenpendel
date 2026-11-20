@@ -27,10 +27,12 @@ class Spring implements Labeled {
         normal.normalize();
         PVector force = PVector.mult(normal, f);
 
+        String mag = "" + round(force.mag() * 10) / 10.0;
+
         // [0]: Kraft auf b, [1]: Kraft auf a;
         return new Force[] {
-            new Force(b, force, labels[0]),
-            new Force(a, PVector.mult(force, -1), labels[1])
+            new Force(b, force, labels[0].replaceAll("%v", mag)),
+            new Force(a, PVector.mult(force, -1), labels[1].replaceAll("%v", mag))
         };
     }
 

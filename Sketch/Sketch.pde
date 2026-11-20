@@ -15,9 +15,12 @@ Camera cam = new Camera();
 
 float last;
 
+boolean running = true;
+
 void setup() {
   size(1280, 800);
-  
+  pixelDensity(2);
+
   Body body = new Body(1.0, 0.25, true);
   body.setPosition(new PVector(0, 2.5));
   env.addBody(body);
@@ -67,6 +70,8 @@ void draw() {
 }
 
 void tick(float dt) {
+  if (!running) return;
+
   for (Spring spring : env.getSprings()) {
     Force[] forces = spring.forces(new String[]{
       "|F_D|=%v\\,\\mathrm{N}",
@@ -119,4 +124,19 @@ void draw_body(Body body) {
   color(255, 0, 0);
   cam.strokeWeight(1);
   circle(body.position.x, body.position.y, body.radius * 2);
+}
+
+void mouseDragged() {
+  cam.handleDrag();
+}
+
+void mouseWheel(MouseEvent e) {
+  float c = e.getCount();
+  cam.zoom *= pow(1.05, -c);
+}
+
+void keyPressed() {
+  if (key == ' ') {
+    running = !running;
+  }
 }

@@ -69,4 +69,19 @@ class Camera {
     g.text(s, 0, 0);           // g.text statt text → keine Rekursion
     popMatrix();
   }
+
+  public void pan(float dx, float dy) {
+    this.x += dx;
+    this.y += dy;
+  }
+
+  public void zoom(float d) {
+    this.zoom += d;
+  }
+
+  public void handleDrag() {
+    float dx = mouseX - pmouseX;
+    float dy = mouseY - pmouseY;
+    pan(-dx / zoom, dy / zoom);
+  }
 }

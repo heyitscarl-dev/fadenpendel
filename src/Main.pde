@@ -14,7 +14,7 @@ void setup() {
   dragged.setPosition(new PVector(-5, 2.5));
   env.addBody(dragged);
 
-  Spring spring = new Spring(500.0, 5.0, body, dragged);
+  Spring spring = new Spring(400.0, 5.0, body, dragged);
   env.addSpring(spring);
   
   last = millis();
@@ -67,7 +67,7 @@ void draw() {
   }
 
   for (Spring s : env.getSprings()) {
-    draw_spring(s);
+    s.draw(cam);
   }
 
   for (Body b : env.getBodies()) {
@@ -82,9 +82,4 @@ void draw_body(Body body) {
   color(255, 0, 0);
   cam.strokeWeight(1);
   circle(body.position.x, body.position.y, body.radius * 2);
-}
-
-void draw_spring(Spring spring) {
-  cam.strokeWeight(1);
-  line(spring.a.position.x, spring.a.position.y, spring.b.position.x, spring.b.position.y);
 }

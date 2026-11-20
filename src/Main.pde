@@ -11,7 +11,7 @@ void setup() {
   env.addBody(body);
 
   Body dragged = new Body(1.0, 0.25, false);
-  dragged.setPosition(new PVector(7, -2.5));
+  dragged.setPosition(new PVector(0.0, 5.0));
   env.addBody(dragged);
 
   Spring spring = new Spring(5.0, body, dragged);
@@ -42,6 +42,13 @@ void draw() {
 
     // Kräfte
     body.forces.add(new PVector(0.0, -env.gravity * body.mass)); // Gewichtskraft
+
+    //Luiftwiederstand
+    float speed = body.velocity.mag();
+    float dragFactor = -0.5* 1.204 * 0.4 * 0.0491 * speed;
+    PVector drag = PVector.mult(body.velocity, dragFactor);
+    body.forces.add(drag);
+
 
     // Resultierende Kraft berechnen 
     PVector res = new PVector(0.0, 0.0);

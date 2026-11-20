@@ -29,7 +29,7 @@ void setup() {
   dragged.setPosition(new PVector(-2.5, 2.5));
   env.addBody(dragged);
 
-  Spring spring = new Spring(5000.0, body, dragged);
+  Spring spring = new Spring(50.0, body, dragged);
   env.addSpring(spring);
   
   last = millis();

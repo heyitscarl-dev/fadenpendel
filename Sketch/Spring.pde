@@ -70,6 +70,7 @@ class Spring implements Labeled {
         float nx = -delta.y / len;
         float ny = delta.x / len;
 
+        fill(255);
         beginShape();
         vertex(a.position.x, a.position.y);
 

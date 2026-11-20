@@ -67,6 +67,11 @@ void draw() {
 
   last = now;
   cam.leave();
+
+  fill(0, 0, 0);
+  textSize(12.5);
+  textAlign(LEFT, BASELINE);
+  text("[Space] to pause", 30, height - 30);
 }
 
 void tick(float dt) {
@@ -121,7 +126,8 @@ void tick(float dt) {
 }
 
 void draw_body(Body body) {
-  color(255, 0, 0);
+  fill(0.9 * 255);
+  stroke(0, 0, 0);
   cam.strokeWeight(1);
   circle(body.position.x, body.position.y, body.radius * 2);
 }

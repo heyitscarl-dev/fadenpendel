@@ -7,6 +7,7 @@
    sodass die Simulation unabhängig von der Framerate ist.
  */
 final float STEP = 1.0 / 240.0;
+final float FORCE_SCALE = 0.075;
 float accumulator = 0.0;
 
 Environment env = new Environment();
@@ -55,34 +56,47 @@ void draw() {
     draw_body(b);
   }
 
+  for (Body b : env.getBodies()) {
+    for (Force f : b.lastForces) {
+      f.scaled(FORCE_SCALE).draw(cam);
+    }
+  }
+
   last = now;
   cam.leave();
 }
 
 void tick(float dt) {
   for (Spring spring : env.getSprings()) {
-    PVector force = spring.force(); // von a -> b;
-    spring.b.applyForce(force);
-    spring.a.applyForce(PVector.mult(force, -1));
+    Force[] forces = spring.forces(new String[]{
+      "|F_D|=%v\\,\\mathrm{N}",
+      "|F_D|=%v\\,\\mathrm{N}"
+    });
+
+    spring.b.applyForce(forces[0]);
+    spring.a.applyForce(forces[1]);
   }
 
   for (Body body : env.getBodies()) {    
     if (body.fixed) {
-      draw_body(body);
-      body.forces.clear();
+      body.clearForces();
       continue;
     }
 
     // Kräfte
-    body.forces.add(new PVector(0.0, -env.gravity * body.mass)); // Gewichtskraft
+    body.forces.add(new Force(
+      body.position,
+      new PVector(0.0, -env.gravity * body.mass),
+      "|F_g|=" + env.gravity * body.mass + "\\,\\mathrm{N}"
+    )); // Gewichtskraft
 
     // Resultierende Kraft berechnen 
     PVector res = new PVector(0.0, 0.0);
-    for (PVector f : body.forces) {
-      res = res.add(f);
+    for (Force f : body.forces) {
+      res = res.add(f.getVector());
     }
     
-    body.forces.clear();
+    body.clearForces();
 
     // Beschleunigung
     PVector a = res.div(body.mass);

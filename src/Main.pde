@@ -22,14 +22,15 @@ void setup() {
   env.addBody(body);
 
   Body dragged = new Body(1.0, 0.25, false);
-  dragged.setPosition(new PVector(-5, 2.5));
+  dragged.setPosition(new PVector(7, -2.5));
   env.addBody(dragged);
 
-  Spring spring = new Spring(500.0, 5.0, body, dragged);
+  Spring spring = new Spring(5.0, body, dragged);
   env.addSpring(spring);
   
   last = millis();
 }
+
 
 void draw() {
   cam.enter();

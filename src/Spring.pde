@@ -6,11 +6,11 @@ class Spring {
 
     Body a, b;
 
-    Spring(float stiffness, float length, Body a, Body b) {
+    Spring(float stiffness, Body a, Body b) {
         this.stiffness = stiffness;
-        this.length = length;
         this.a = a;
         this.b = b;
+        this.length = length();
     }
 
     PVector force() {
@@ -84,5 +84,14 @@ class Spring {
     private void draw_as_line(Camera cam) {
         cam.strokeWeight(1);
         line(a.position.x, a.position.y, b.position.x, b.position.y);
+    }
+    
+    float length(){
+        float s1 = b.position.x - a.position.x;
+        float s2 = b.position.y - a.position.y;
+
+        float length = sqrt(s1*s1+s2*s2);
+
+        return length;
     }
 }

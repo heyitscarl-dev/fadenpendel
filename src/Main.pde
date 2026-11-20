@@ -36,6 +36,7 @@ void draw() {
   for (Body body : env.getBodies()) {    
     if (body.fixed) {
       draw_body(body);
+      body.forces.clear();
       continue;
     }
 

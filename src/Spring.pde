@@ -27,11 +27,22 @@ class Spring {
     }
 
     public void draw(Camera cam) {
+        draw_text("l = " + length + "\\,\\mathrm{m}", cam);
         if (this.stiffness >= 500) {
             draw_as_line(cam);
             return;
         }
         draw_as_spring(cam);
+    }
+
+    private void draw_text(String text, Camera cam) {
+        PVector mid = PVector.lerp(a.position, b.position, 0.5);
+        PVector perp = PVector.sub(b.position, a.position);
+        perp.normalize();
+        perp = new PVector(-perp.y, perp.x);
+        mid = PVector.add(mid, PVector.mult(perp, 0.35));
+
+        cam.latex(text, mid.x, mid.y);
     }
 
     private void draw_as_spring(Camera cam) {

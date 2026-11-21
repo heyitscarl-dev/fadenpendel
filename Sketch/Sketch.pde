@@ -30,7 +30,7 @@ void setup() {
   dragged.setPosition(new PVector(-2.5, 2.5));
   env.addBody(dragged);
 
-  Spring spring = new Spring(5.0, body, dragged);
+  Spring spring = new Spring(500.0, body, dragged);
   env.addSpring(spring);
   
   last = millis();
@@ -109,7 +109,7 @@ void tick(float dt) {
     body.forces.add(new Force(
       body.position,
       drag,
-      "|F_L|=" + drag.mag() + "\\,\\mathrm{N}"
+      "|F_L|=" + round(drag.mag()*10)/10.0 + "\\,\\mathrm{N}"
     )); // Luftwiderstand
 
     // Resultierende Kraft berechnen 

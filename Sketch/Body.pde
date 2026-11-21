@@ -44,4 +44,8 @@ class Body {
     lastForces = new ArrayList<Force>(forces);
     forces.clear();
   }
+
+  void draw() {
+    circle(position.x, position.y, radius * 2);
+  }
 }

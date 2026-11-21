@@ -1,17 +1,10 @@
-/* Durch die LaTeX labels (in Spring.pde) verändert sich die
-   Framerate erheblich. Dadurch wird die Physik Simulation
-   instabil und die Feder (auch bei sehr hoher Federkonstante)
-   fängt an sichtbar zu Schwingen.
-
-   Um das zu verhindern führt man einen festen "timestep" ein, 
-   sodass die Simulation unabhängig von der Framerate ist.
- */
 final float STEP = 1.0 / 240.0;
 final float FORCE_SCALE = 0.075;
 float accumulator = 0.0;
 
 Environment env = new Environment();
 Camera cam = new Camera();
+Display display = new Display();
 
 float last;
 
@@ -34,46 +27,6 @@ void setup() {
   env.addSpring(spring);
   
   last = millis();
-}
-
-
-void draw() {
-  cam.enter();
-  background(255, 255, 255);
-
-  float now = millis();
-  float dt = (now - last) / 1000.0;  // vergangene Zeit in s
-  last = now;
-  dt = min(dt, 0.1);  // verhindert, dass riesige Lücken "nachgeholt" werden
-  
-  accumulator += dt;
-  while (accumulator >= STEP) {
-    tick(STEP);
-    accumulator -= STEP;
-  }
-
-  for (Spring s : env.getSprings()) {
-    s.draw(cam);
-  }
-
-  for (Body b : env.getBodies()) {
-    draw_body(b);
-  }
-
-  for (Body b : env.getBodies()) {
-    for (Force f : b.lastForces) {
-      f.scaled(FORCE_SCALE).draw(cam);
-    }
-  }
-
-  last = now;
-  cam.leave();
-
-  fill(0, 0, 0);
-  textSize(12.5);
-  textAlign(LEFT, BASELINE);
-  text("[Space] to pause", 30, height - 30);
-  text("[Enter] to step", 30, height - 45);
 }
 
 void tick(float dt) {
@@ -137,11 +90,8 @@ void tick(float dt) {
   }
 }
 
-void draw_body(Body body) {
-  fill(0.9 * 255);
-  stroke(0, 0, 0);
-  cam.strokeWeight(1);
-  circle(body.position.x, body.position.y, body.radius * 2);
+void draw() {
+  display.draw(cam);
 }
 
 void mouseDragged() {

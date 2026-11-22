@@ -25,10 +25,10 @@ void tick(float dt) {
         "|F_g|=" + env.gravity * body.mass + "\\,\\mathrm{N}"
         )); // Gewichtskraft
 
-        
-        if (Sketch.luft == true){
         float velocity = body.velocity.mag();
-        float dragFactor = -0.5 * 1.204 * 0.4 * PI * body.radius * body.radius * velocity * velocity;
+
+        if (Sketch.luft == true){
+        float dragFactor = -0.5 * 1.204 * 0.4 * PI * sq(body.radius) * sq(velocity);
         PVector drag = PVector.mult(body.velocity, dragFactor);
         body.forces.add(new Force(
         body.position,
@@ -36,6 +36,10 @@ void tick(float dt) {
         "|F_L|=" + round(drag.mag()*10)/10.0 + "\\,\\mathrm{N}"
         )); // Luftwiderstand
         }
+
+        PVector Fliehkraft = PVector.mult(body.position, body.mass * sq(velocity) / body.radius);
+        body.forces.add(new Force(body.position, Fliehkraft , "|F_L|=" + round(Fliehkraft.mag()*10)/10.0 + "\\,\\mathrm{N}"));
+        //Fliehkraft
 
         // Resultierende Kraft berechnen 
         PVector res = new PVector(0.0, 0.0);

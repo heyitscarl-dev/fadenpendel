@@ -10,6 +10,7 @@ float last;
 
 boolean running = true;
 boolean doStep = false;
+static boolean luft = true;
 
 void setup() {
   size(1280, 800);
@@ -24,7 +25,7 @@ void setup() {
 
   // Der Schwingkörper. Er ist auch an dem "Faden" befestigt
   // und teil des Pendels. `fixed == false`
-  Body dragged = new Body(5.0, 0.25*5, false);
+  Body dragged = new Body(5.0, 0.25, false);
   dragged.setPosition(new PVector(-2.5, 2.5));
   env.addBody(dragged);
 

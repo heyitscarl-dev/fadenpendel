@@ -6,6 +6,8 @@ Environment env = new Environment();
 Camera cam = new Camera();
 Display display = new Display();
 
+Button velocityArrows = new Button(false, "Velocities", new PVector(50, 50));
+
 float last;
 
 boolean running = true;
@@ -63,8 +65,9 @@ void draw() {
     tick(STEP); // (siehe Sketch/Simulation.pde)
     accumulator -= STEP;
   }
-
+  
   display.draw(cam);
+  velocityArrows.draw(cam);
 }
 
 void mouseDragged() {

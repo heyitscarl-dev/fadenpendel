@@ -14,29 +14,40 @@ class Camera {
   }
 
   void latex(String tex, float x, float y) {
-    int alignX = LEFT;
-    int alignY = BOTTOM;
+    latex(tex, x, y, 16);
+  }
 
-    TeXIcon icon = cache.get(tex);
-    if (icon == null) {  // Formel nur einmal setzen, nicht in jedem Frame
-      icon = new TeXFormula(tex).createTeXIcon(TeXConstants.STYLE_DISPLAY, 16);
-      icon.setForeground(java.awt.Color.BLACK);
-      cache.put(tex, icon);
-    }
-
-    float w = icon.getIconWidth();
-    float h = icon.getIconHeight();
-    float ox = (alignX == LEFT) ? 0 : (alignX == RIGHT) ? -w : -w / 2;
-    float oy = (alignY == TOP)  ? 0 : (alignY == BOTTOM) ? -h : -h / 2;
-
+  // Zeichnet eine Formel an einer Position in Welt-Koordinaten
+  // (nur zwischen cam.enter() und cam.leave() aufrufen).
+  void latex(String tex, float x, float y, float size) {
     pushMatrix();
     translate(x, y);
     scale(1 / zoom, -1 / zoom);  // zurück auf Pixel und y-Spiegelung aufheben
-    java.awt.Graphics2D g2 = ((processing.awt.PGraphicsJava2D) g).g2;
-    icon.paintIcon(null, g2, (int) ox, (int) oy);
+    latexScreen(tex, 0, 0, size);
     popMatrix();
   }
-  
+
+  // Zeichnet eine Formel an einer Position in Bildschirm-Pixeln
+  // (außerhalb von cam.enter()/cam.leave(), z. B. für UI wie Buttons).
+  // Die Formel wird links-unten an (x, y) ausgerichtet.
+  void latexScreen(String tex, float x, float y, float size) {
+    String key = size + "|" + tex;
+    TeXIcon icon = cache.get(key);
+    if (icon == null) {  // Formel nur einmal setzen, nicht in jedem Frame
+      icon = new TeXFormula(tex).createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
+      icon.setForeground(java.awt.Color.BLACK);
+      cache.put(key, icon);
+    }
+
+    int h = icon.getIconHeight();
+
+    java.awt.Graphics2D g2 = ((processing.awt.PGraphicsJava2D) g).g2;
+    pushMatrix();
+    translate(x, y);
+    icon.paintIcon(null, g2, 0, -h);
+    popMatrix();
+  }
+
   Camera() {
     this.x = 0;
     this.y = 0;

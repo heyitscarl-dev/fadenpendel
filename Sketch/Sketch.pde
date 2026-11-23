@@ -6,7 +6,10 @@ Environment env = new Environment();
 Camera cam = new Camera();
 Display display = new Display();
 
-Button velocityArrows = new Button(false, "Velocities", new PVector(50, 50));
+Button btnVelocityArrows  = new Button(false, "Velocities", new PVector(50, 50));
+Button btnForceArrows     = new Button(false, "Forces", new PVector(50, 100));
+Button btnLabels          = new Button(false, "Labels", new PVector(50, 150));
+
 
 float last;
 
@@ -37,7 +40,7 @@ void setup() {
    * auch interessante ergebnisse.
   */
   
-  float stiffness = 20.0;
+  float stiffness = 500.0;
   Spring spring = new Spring(stiffness, body, dragged);
   env.addSpring(spring);
   
@@ -67,11 +70,15 @@ void draw() {
   }
   
   display.draw(cam);
-  velocityArrows.draw(cam);
+  btnVelocityArrows.draw(cam);
+  btnForceArrows.draw(cam);
+  btnLabels.draw(cam);
 }
 
 void mousePressed() {
-  velocityArrows.handleMousePressed();
+  btnVelocityArrows.handleMousePressed();
+  btnForceArrows.handleMousePressed();
+  btnLabels.handleMousePressed();
 }
 
 void mouseDragged() {

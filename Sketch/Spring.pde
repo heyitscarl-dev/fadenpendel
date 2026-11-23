@@ -38,7 +38,10 @@ class Spring implements Labeled {
 
     public void draw(Camera cam) {
         stroke(0);
-        draw_text("l = " + (round(length() * 10) / 10.0) + "\\,\\mathrm{m}", cam);
+        if (btnLabels.state()) {
+            draw_text("l = " + (round(length() * 10) / 10.0) + "\\,\\mathrm{m}", cam);
+        }
+        
         if (this.stiffness >= 500) {
             draw_as_line(cam);
             return;

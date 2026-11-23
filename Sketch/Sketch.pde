@@ -10,7 +10,7 @@ float last;
 
 boolean running = true;
 boolean doStep = false;
-static boolean luft = true;
+static boolean luft = false;
 
 void setup() {
   size(1280, 800);

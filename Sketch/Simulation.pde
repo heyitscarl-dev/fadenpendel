@@ -38,7 +38,7 @@ void tick(float dt) {
         }
 
         PVector Fliehkraft = PVector.mult(body.position, body.mass * sq(velocity) / body.radius);
-        body.forces.add(new Force(body.position, Fliehkraft , "|F_L|=" + round(Fliehkraft.mag()*10)/10.0 + "\\,\\mathrm{N}"));
+        body.forces.add(new Force( body.velocity ,new PVector(0.0 , 0.0), "|F_f|=" + round(Fliehkraft.mag()*10)/10.0 + "\\,\\mathrm{N}"));
         //Fliehkraft
 
         // Resultierende Kraft berechnen 

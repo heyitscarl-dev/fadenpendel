@@ -70,6 +70,10 @@ void draw() {
   velocityArrows.draw(cam);
 }
 
+void mousePressed() {
+  velocityArrows.handleMousePressed();
+}
+
 void mouseDragged() {
   cam.handleDrag();
 }

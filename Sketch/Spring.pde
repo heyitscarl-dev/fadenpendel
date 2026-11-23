@@ -31,8 +31,8 @@ class Spring implements Labeled {
 
         // [0]: Kraft auf b, [1]: Kraft auf a;
         return new Force[] {
-            new Force(b, force, labels[0].replaceAll("%v", mag)),
-            new Force(a, PVector.mult(force, -1), labels[1].replaceAll("%v", mag))
+            new Force(b, force, labels[0].replaceAll("%v", mag), color(0, 255, 0)),
+            new Force(a, PVector.mult(force, -1), labels[1].replaceAll("%v", mag), color(0, 255, 0))
         };
     }
 

@@ -22,7 +22,8 @@ void tick(float dt) {
         body.forces.add(new Force(
         body.position,
         new PVector(0.0, -env.gravity * body.mass),
-        "|F_g|=" + env.gravity * body.mass + "\\,\\mathrm{N}"
+        "|F_g|=" + env.gravity * body.mass + "\\,\\mathrm{N}",
+        color(255, 0, 0)
         )); // Gewichtskraft
 
         
@@ -33,7 +34,8 @@ void tick(float dt) {
         body.forces.add(new Force(
         body.position,
         drag,
-        "|F_L|=" + round(drag.mag()*10)/10.0 + "\\,\\mathrm{N}"
+        "|F_L|=" + round(drag.mag()*10)/10.0 + "\\,\\mathrm{N}",
+        color(0, 0, 255)
         )); // Luftwiderstand
         }
 

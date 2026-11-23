@@ -2,16 +2,18 @@ class Force implements Labeled {
     PVector origin;
     PVector vector;
     String label;
+    int stroke;
 
-    Force(PVector origin, PVector vector, String label) {
+    Force(PVector origin, PVector vector, String label, int stroke) {
         this.origin = origin;
         this.vector = vector;
         this.label  = label;
+        this.stroke = stroke;
     }
 
     Force scaled(float scalar) {
         PVector updated = PVector.mult(this.vector, scalar);
-        return new Force(origin, updated, label);
+        return new Force(origin, updated, label, stroke);
     }
 
     PVector getVector() {
@@ -29,7 +31,7 @@ class Force implements Labeled {
         float head = min(0.2, len * 0.2);
         PVector base = PVector.sub(to, PVector.mult(dir, head));
 
-        stroke(0, 0, 0);
+        stroke(this.stroke);
         cam.strokeWeight(1);
         line(origin.x, origin.y, to.x, to.y);
         line(to.x, to.y, base.x + perp.x * head * 0.5, base.y + perp.y * head * 0.5);

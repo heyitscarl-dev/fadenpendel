@@ -1,3 +1,5 @@
+final int COLOR_VELOCITY = color(151, 66, 135);
+
 class Body {
   String identifier;
   float mass;
@@ -45,7 +47,17 @@ class Body {
     forces.clear();
   }
 
-  void draw() {
+  void draw(Camera cam) {
     circle(position.x, position.y, radius * 2);
+    
+    PVector midpoint = PVector.add(position, PVector.mult(velocity, 0.5));
+    PVector perp = velocity.copy();
+    perp.normalize();
+    perp = new PVector(-perp.y, perp.x);
+
+    midpoint = PVector.add(midpoint, PVector.mult(perp, 0.35));
+
+    cam.drawArrow(position, velocity, COLOR_VELOCITY);
+    cam.drawLabel("\\vec{v} = " + round(velocity.mag() * 10) / 10.0 + "\\,\\frac ms", midpoint);
   }
 }

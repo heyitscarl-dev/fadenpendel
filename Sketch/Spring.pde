@@ -55,7 +55,7 @@ class Spring implements Labeled {
     }
 
     private void draw_text(String text, Camera cam) {
-        cam.drawLabel(text, this);
+        cam.drawLabel(text, this.getAttachmentPoint());
     }
 
     private void draw_as_spring(Camera cam) {

@@ -9,9 +9,8 @@ class Camera {
 
   HashMap<String, TeXIcon> cache = new HashMap<String, TeXIcon>();
 
-  void drawLabel(String text, Labeled labeled) {
-    PVector attach = labeled.getAttachmentPoint();
-    latex(text, attach.x, attach.y);
+  void drawLabel(String text, PVector attachment) {
+    latex(text, attachment.x, attachment.y);
   }
 
   void latex(String tex, float x, float y) {
@@ -83,5 +82,23 @@ class Camera {
     float dx = mouseX - pmouseX;
     float dy = mouseY - pmouseY;
     pan(-dx / zoom, dy / zoom);
+  }
+
+  void drawArrow(PVector origin, PVector vector, int stroke_color) {
+      float len = vector.mag();
+      if (len < 1e-6) return;
+
+      PVector to = PVector.add(origin, vector);
+      PVector dir = PVector.div(vector, len);
+      PVector perp = new PVector(-dir.y, dir.x);
+
+      float head = min(0.2, len * 0.2);
+      PVector base = PVector.sub(to, PVector.mult(dir, head));
+
+      stroke(stroke_color);
+      this.strokeWeight(1.5);
+      line(origin.x, origin.y, to.x, to.y);
+      line(to.x, to.y, base.x + perp.x * head * 0.5, base.y + perp.y * head * 0.5);
+      line(to.x, to.y, base.x - perp.x * head * 0.5, base.y - perp.y * head * 0.5);
   }
 }

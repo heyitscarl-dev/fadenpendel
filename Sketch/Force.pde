@@ -21,24 +21,8 @@ class Force implements Labeled {
     }
 
     public void draw(Camera cam) {
-        float len = vector.mag();
-        if (len < 1e-6) return;
-
-        PVector to = PVector.add(origin, vector);
-        PVector dir = PVector.div(vector, len);
-        PVector perp = new PVector(-dir.y, dir.x);
-
-        float head = min(0.2, len * 0.2);
-        PVector base = PVector.sub(to, PVector.mult(dir, head));
-
-        stroke(this.stroke);
-        cam.strokeWeight(1.5);
-        line(origin.x, origin.y, to.x, to.y);
-        line(to.x, to.y, base.x + perp.x * head * 0.5, base.y + perp.y * head * 0.5);
-        line(to.x, to.y, base.x - perp.x * head * 0.5, base.y - perp.y * head * 0.5);
-        stroke(0);
-
-        cam.drawLabel(label, this);
+        cam.drawArrow(origin, vector, this.stroke);
+        cam.drawLabel(label, this.getAttachmentPoint());
     }
 
     public PVector getAttachmentPoint() {

@@ -28,7 +28,7 @@ void tick(float dt) {
         
         if (Sketch.luft == true){
         float velocity = body.velocity.mag();
-        float dragFactor = -0.5 * 1.204 * 0.4 * PI * body.radius * body.radius * velocity * velocity;
+        float dragFactor = -0.5 * 1.204 * 0.4 * PI * body.radius * body.radius * velocity; // nur 1x velocity, weil body.velocity später multipliziert wird
         PVector drag = PVector.mult(body.velocity, dragFactor);
         body.forces.add(new Force(
         body.position,

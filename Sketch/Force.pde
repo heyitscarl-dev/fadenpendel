@@ -32,7 +32,7 @@ class Force implements Labeled {
         PVector base = PVector.sub(to, PVector.mult(dir, head));
 
         stroke(this.stroke);
-        cam.strokeWeight(1);
+        cam.strokeWeight(1.5);
         line(origin.x, origin.y, to.x, to.y);
         line(to.x, to.y, base.x + perp.x * head * 0.5, base.y + perp.y * head * 0.5);
         line(to.x, to.y, base.x - perp.x * head * 0.5, base.y - perp.y * head * 0.5);

@@ -21,7 +21,7 @@ class Force implements Labeled {
     }
 
     public void draw(Camera cam) {
-        if (!btnForceArrows.state()) return;
+        // if (!btnForceArrows.state()) return;
 
         cam.drawArrow(origin, vector, this.stroke);
         cam.drawLabel(label, this.getAttachmentPoint());

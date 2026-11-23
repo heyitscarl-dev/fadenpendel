@@ -6,10 +6,9 @@ Environment env = new Environment();
 Camera cam = new Camera();
 Display display = new Display();
 
-Button btnVelocityArrows  = new Button(false, "Velocities", new PVector(50, 50));
-Button btnForceArrows     = new Button(false, "Forces", new PVector(50, 100));
-Button btnLabels          = new Button(false, "Labels", new PVector(50, 150));
-
+UIOverlay defaultOverlay = new UIOverlay();
+UIContainer controls = new UIContainer(new PVector(50, 50));
+UIElement toggle = new Toggle();
 
 float last;
 
@@ -18,6 +17,9 @@ boolean doStep = false;
 static boolean luft = true;
 
 void setup() {
+  controls.elements.add(toggle);
+  defaultOverlay.elements.add(controls);
+
   size(1280, 800);
   pixelDensity(2);
 
@@ -70,15 +72,11 @@ void draw() {
   }
   
   display.draw(cam);
-  btnVelocityArrows.draw(cam);
-  btnForceArrows.draw(cam);
-  btnLabels.draw(cam);
+  defaultOverlay.drawToScreen(cam);
 }
 
 void mousePressed() {
-  btnVelocityArrows.handleMousePressed();
-  btnForceArrows.handleMousePressed();
-  btnLabels.handleMousePressed();
+  defaultOverlay.handleClick(new PVector(mouseX, mouseY));
 }
 
 void mouseDragged() {

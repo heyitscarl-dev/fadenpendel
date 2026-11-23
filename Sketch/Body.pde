@@ -50,7 +50,7 @@ class Body {
   void draw(Camera cam) {
     circle(position.x, position.y, radius * 2);
     
-    if (btnVelocityArrows.state() == false) return;
+    // if (btnVelocityArrows.state() == false) return;
     if (velocity.mag() == 0) return;
 
     PVector midpoint = PVector.add(position, PVector.mult(velocity, 0.5));

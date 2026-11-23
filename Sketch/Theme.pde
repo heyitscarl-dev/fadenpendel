@@ -1,0 +1,3 @@
+final int THEME_BACKGROUND  = color(251, 251, 251, 253);
+final int THEME_PANEL       = color(255, 255, 255, 235);
+final int THEME_PANEL_EDGE  = color(0, 0, 0, 26);

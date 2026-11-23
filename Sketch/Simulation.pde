@@ -22,7 +22,7 @@ void tick(float dt) {
         body.forces.add(new Force(
         body.position,
         new PVector(0.0, -env.gravity * body.mass),
-        "|F_g|=" + env.gravity * body.mass + "\\,\\mathrm{N}",
+        "|F_g|=" + round((env.gravity * body.mass) * 10)/10.0 + "\\,\\mathrm{N}",
         color(255, 0, 0)
         )); // Gewichtskraft
 

@@ -22,18 +22,18 @@ void tick(float dt) {
         body.forces.add(new Force(
         body.position,
         new PVector(0.0, -env.gravity * body.mass),
-        "|F_g|=" + env.gravity * body.mass + "\\,\\mathrm{N}"
+        "|F_g|=" + round((env.gravity * body.mass) * 10)/10.0 + "\\,\\mathrm{N}",
+        color(255, 0, 0)
         )); // Gewichtskraft
 
         float velocity = body.velocity.mag();
-
-        if (Sketch.luft == true){
-        float dragFactor = -0.5 * 1.204 * 0.4 * PI * sq(body.radius) * velocity;
+        float dragFactor = -0.5 * 1.204 * 0.4 * PI * body.radius * body.radius * velocity; // nur 1x velocity, weil body.velocity später multipliziert wird
         PVector drag = PVector.mult(body.velocity, dragFactor);
         body.forces.add(new Force(
         body.position,
         drag,
-        "|F_L|=" + round(drag.mag()*10)/10.0 + "\\,\\mathrm{N}"
+        "|F_L|=" + round(drag.mag()*10)/10.0 + "\\,\\mathrm{N}",
+        color(0, 0, 255)
         )); // Luftwiderstand
         }
 

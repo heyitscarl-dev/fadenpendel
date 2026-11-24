@@ -31,13 +31,17 @@ class Spring implements Labeled {
 
         // [0]: Kraft auf b, [1]: Kraft auf a;
         return new Force[] {
-            new Force(b, force, labels[0].replaceAll("%v", mag)),
-            new Force(a, PVector.mult(force, -1), labels[1].replaceAll("%v", mag))
+            new Force(b, force, labels[0].replaceAll("%v", mag), color(0, 255, 0)),
+            new Force(a, PVector.mult(force, -1), labels[1].replaceAll("%v", mag), color(0, 255, 0))
         };
     }
 
     public void draw(Camera cam) {
-        draw_text("l = " + (round(length() * 10) / 10.0) + "\\,\\mathrm{m}", cam);
+        stroke(0);
+        if (btnLabels.state()) {
+            draw_text("l = " + (round(length() * 10) / 10.0) + "\\,\\mathrm{m}", cam);
+        }
+        
         if (this.stiffness >= 500) {
             draw_as_line(cam);
             return;
@@ -55,7 +59,7 @@ class Spring implements Labeled {
     }
 
     private void draw_text(String text, Camera cam) {
-        cam.drawLabel(text, this);
+        cam.drawLabel(text, this.getAttachmentPoint());
     }
 
     private void draw_as_spring(Camera cam) {

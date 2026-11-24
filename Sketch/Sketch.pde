@@ -8,7 +8,7 @@ Display display = new Display();
 
 UIOverlay defaultOverlay = new UIOverlay();
 UIContainer controls = new UIContainer(new PVector(50, 50));
-UIElement btnDrawVelocities = new Toggle("\\text{Velocities}");
+Toggle btnDrawVelocities = new Toggle("\\text{Velocities}");
 Toggle btnDrawForces = new Toggle("\\text{Forces}");
 
 UIOverlay velocityOverlay = new UIOverlay();
@@ -81,6 +81,9 @@ void draw() {
   cam.enter();
   if (btnDrawForces.state) {
     forceOverlay.drawToScreen(cam);
+  }
+  if (btnDrawVelocities.state) {
+    velocityOverlay.drawToScreen(cam);
   }
   cam.leave();
 

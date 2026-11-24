@@ -1,4 +1,17 @@
-final int COLOR_VELOCITY = color(151, 66, 135);
+class VelocityArrow implements UIArrow {
+  final int stroke = color(151, 66, 135);
+  PVector origin;
+  PVector vector;
+
+  PVector origin() { return origin; }
+  PVector vector() { return vector; }
+  int strokeColor() { return stroke; }
+
+  VelocityArrow(PVector origin, PVector vector) {
+    this.origin = origin;
+    this.vector = vector;
+  }
+}
 
 class Body {
   String identifier;
@@ -49,18 +62,9 @@ class Body {
 
   void draw(Camera cam) {
     circle(position.x, position.y, radius * 2);
-    
-    // if (btnVelocityArrows.state() == false) return;
-    if (velocity.mag() == 0) return;
+  }
 
-    PVector midpoint = PVector.add(position, PVector.mult(velocity, 0.5));
-    PVector perp = velocity.copy();
-    perp.normalize();
-    perp = new PVector(-perp.y, perp.x);
-
-    midpoint = PVector.add(midpoint, PVector.mult(perp, 0.35));
-
-    // cam.drawArrow(position, velocity, COLOR_VELOCITY);
-    // cam.drawLabel("\\vec{v} = " + round(velocity.mag() * 10) / 10.0 + "\\,\\frac ms", midpoint);
+  VelocityArrow toVelocityArrow() {
+    return new VelocityArrow(position, velocity);
   }
 }

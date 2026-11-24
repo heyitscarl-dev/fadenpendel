@@ -18,7 +18,9 @@ class Display {
         }
 
         forceOverlay.elements.clear();
+        velocityOverlay.elements.clear();
         for (Body b : env.getBodies()) {
+            velocityOverlay.elements.add(b.toVelocityArrow());
             for (Force f : b.lastForces) {
                 forceOverlay.elements.add(f.scaled(FORCE_SCALE).toArrow());
             }

@@ -26,8 +26,6 @@ void tick(float dt) {
         color(255, 0, 0)
         )); // Gewichtskraft
 
-        
-        if (Sketch.luft == true){
         float velocity = body.velocity.mag();
         float dragFactor = -0.5 * 1.204 * 0.4 * PI * body.radius * body.radius * velocity; // nur 1x velocity, weil body.velocity später multipliziert wird
         PVector drag = PVector.mult(body.velocity, dragFactor);
@@ -38,6 +36,10 @@ void tick(float dt) {
         color(0, 0, 255)
         )); // Luftwiderstand
         }
+
+        PVector Fliehkraft = PVector.mult(body.position, body.mass * sq(velocity) / body.radius);
+        body.forces.add(new Force(body.position ,body.position, "|F_f|=" + round(Fliehkraft.mag()*10)/10.0 + "\\,\\mathrm{N}"));
+        //Fliehkraft
 
         // Resultierende Kraft berechnen 
         PVector res = new PVector(0.0, 0.0);

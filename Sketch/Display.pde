@@ -14,7 +14,7 @@ class Display {
             stroke(strokeBody);
             fill(fillBody);
             cam.strokeWeight(1);
-            b.draw();
+            b.draw(cam);
         }
 
         forceOverlay.elements.clear();

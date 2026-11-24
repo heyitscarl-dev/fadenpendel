@@ -78,13 +78,25 @@ class Body implements UILabel {
     forces.clear();
   }
 
-  void draw() {
-    if (fixed) drawFixed();
+  void draw(Camera camera) {
+    if (fixed) drawFixed(camera);
     else circle(position.x, position.y, radius * 2);
   }
   
-  void drawFixed() {
+  void drawFixed(Camera camera) {
+    float width = 2 * radius;
+    float h = 0.1;                 // Höhe der Schraffur und ungefährer Abstand
+    int n = max(1, round(width / h));
+    float gap = (width - h) / max(1, n - 1);
+
+    camera.strokeWeight(1.5);
     line(position.x - radius, position.y, position.x + radius, position.y);
+    
+    camera.strokeWeight(0.75);
+    for (int i = 0; i < n; i++) {
+      float x = position.x - radius + i * gap;
+      line(x, position.y, x + h, position.y + h);
+    }
   }
 
   VelocityArrow toVelocityArrow() {

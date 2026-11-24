@@ -8,7 +8,7 @@ Display display = new Display();
 
 UIOverlay defaultOverlay = new UIOverlay();
 UIContainer controls = new UIContainer(new PVector(50, 50));
-UIElement toggle = new Toggle();
+UIElement toggle = new Toggle("\\text{Velocities}");
 
 float last;
 
@@ -42,7 +42,7 @@ void setup() {
    * auch interessante ergebnisse.
   */
   
-  float stiffness = 500.0;
+  float stiffness = 20.0;
   Spring spring = new Spring(stiffness, body, dragged);
   env.addSpring(spring);
   

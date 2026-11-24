@@ -1,13 +1,24 @@
 import org.scilab.forge.jlatexmath.*;
 import java.util.HashMap;
 
+static HashMap<String, TeXIcon> cache = new HashMap<String, TeXIcon>();
+
+static TeXIcon latexIcon(String tex, float size) {
+  String key = size + "|" + tex;
+  TeXIcon icon = cache.get(key);
+  if (icon == null) {
+    icon = new TeXFormula(tex).createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
+    icon.setForeground(java.awt.Color.BLACK);
+    cache.put(key, icon);
+  }
+  return icon;
+}
+
 class Camera {
   static final float SCALE = 50;
   
   float x, y;
   float zoom;
-
-  HashMap<String, TeXIcon> cache = new HashMap<String, TeXIcon>();
 
   void drawLabel(String text, PVector attachment) {
     latex(text, attachment.x, attachment.y);
@@ -31,14 +42,11 @@ class Camera {
   // (außerhalb von cam.enter()/cam.leave(), z. B. für UI wie Buttons).
   // Die Formel wird links-unten an (x, y) ausgerichtet.
   void latexScreen(String tex, float x, float y, float size) {
-    String key = size + "|" + tex;
-    TeXIcon icon = cache.get(key);
-    if (icon == null) {  // Formel nur einmal setzen, nicht in jedem Frame
-      icon = new TeXFormula(tex).createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
-      icon.setForeground(java.awt.Color.BLACK);
-      cache.put(key, icon);
-    }
+    TeXIcon icon = latexIcon(tex, size);
+    latexScreen(icon, x, y);
+  }
 
+  void latexScreen(TeXIcon icon, float x, float y) {
     int h = icon.getIconHeight();
 
     java.awt.Graphics2D g2 = ((processing.awt.PGraphicsJava2D) g).g2;

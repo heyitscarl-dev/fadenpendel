@@ -10,10 +10,14 @@ interface UIElement {
  *   \fill (x,y) circle (r);
  * Der Knopf ist aus = hohl, an = schwarz gefüllt, und gleitet zur Seite. */
 class Toggle implements UIElement {
+    final float LABEL_SIZE = 16;
+
     final float WIDTH = 38;
     final float HEIGHT = 20;
     final float KNOB_INSET = 3;    // Abstand zwischen Knopf und Rand der Spur
     final float LINE_WIDTH = 0.8;  // entspricht TikZ "thick" (0.8pt)
+
+    final float LABEL_INNER_MARGIN = WIDTH / 2;
 
     final int INK       = color(0);    // "black"
     final int TRACK_OFF = color(255);  // "white"
@@ -27,6 +31,12 @@ class Toggle implements UIElement {
 
     // Wo der Schalter zuletzt gezeichnet wurde (für contains()).
     PVector lastPosition = null;
+
+    TeXIcon label;
+
+    Toggle(String label) {
+        this.label = latexIcon(label, LABEL_SIZE);
+    }
 
     void handleClick(PVector position) {
         if (contains(position.x, position.y)) toggle();
@@ -68,9 +78,11 @@ class Toggle implements UIElement {
 
         fill(lerpColor(color(255), INK, knob));
         circle(x, y, diameter);
+
+        camera.latexScreen(this.label, position.x + WIDTH + LABEL_INNER_MARGIN, position.y + HEIGHT / 1.2);
     }
 
     PVector dimensions() {
-        return new PVector(WIDTH, HEIGHT);
+        return new PVector(WIDTH + label.getIconWidth() + LABEL_INNER_MARGIN, HEIGHT);
     }
 }

@@ -4,6 +4,7 @@ interface UIElement {
     void drawToScreen(Camera camera, PVector position);
     PVector dimensions(Camera camera);
     void handleClick(Camera camera, PVector position);
+    default boolean visible() { return true; }
 }
 
 interface UILabel extends UIElement {

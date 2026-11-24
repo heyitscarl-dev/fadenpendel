@@ -24,6 +24,10 @@ class Body implements UILabel {
   ArrayList<Force> lastForces;
   public boolean fixed;
 
+  boolean visible() {
+    return !fixed; 
+  }
+
   TeXIcon label(Camera camera) {
     return latexIcon(identifier /* + "=" + round(mass * 10)/10.0 + "\\,\\mathrm kg" */, LABEL_SIZE * 0.825 / 50 * camera.zoom);
   }
@@ -74,8 +78,13 @@ class Body implements UILabel {
     forces.clear();
   }
 
-  void draw(Camera cam) {
-    circle(position.x, position.y, radius * 2);
+  void draw() {
+    if (fixed) drawFixed();
+    else circle(position.x, position.y, radius * 2);
+  }
+  
+  void drawFixed() {
+    line(position.x - radius, position.y, position.x + radius, position.y);
   }
 
   VelocityArrow toVelocityArrow() {

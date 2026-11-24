@@ -35,10 +35,10 @@ void tick(float dt) {
         "|F_L|=" + round(drag.mag()*10)/10.0 + "\\,\\mathrm{N}",
         color(0, 0, 255)
         )); // Luftwiderstand
-        }
+        
 
-        PVector Fliehkraft = PVector.mult(body.position, body.mass * sq(velocity) / body.radius);
-        body.forces.add(new Force(body.position ,body.position, "|F_f|=" + round(Fliehkraft.mag()*10)/10.0 + "\\,\\mathrm{N}"));
+        //float Fliehkraft = (body.mass * sq(velocity) / spring.length() );
+        //body.forces.add(new Force(body.position ,body.position, "|F_f|=" + round(Fliehkraft*10)/10.0 + "\\,\\mathrm{N}", color(0,0,0)));
         //Fliehkraft
 
         // Resultierende Kraft berechnen 

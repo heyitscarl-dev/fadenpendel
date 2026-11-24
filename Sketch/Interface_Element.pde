@@ -6,11 +6,51 @@ interface UIElement {
     void handleClick(PVector position);
 }
 
-interface UIArrow extends UIElement {
+interface UILabel extends UIElement {
+    TeXIcon label();
+    PVector anchor(Camera camera);  // Linke untere Ecke des Labels in Welt-Koordinaten
+
+    default void drawToScreen(Camera camera, PVector position) {
+        PVector anchor = anchor(camera);
+        camera.latex(label(), anchor.x, anchor.y);
+    }
+
+    default PVector dimensions() {
+        TeXIcon label = label();
+        return new PVector(label.getIconWidth(), label.getIconHeight());
+    }
+
+    default void handleClick(PVector position) {}
+}
+
+interface UIOffsetLabel extends UILabel {
+    PVector origin();
+    PVector vector();
+
+    default PVector anchor(Camera camera) {
+        float len = vector().mag();
+        if (len < 1e-6) return origin().copy();
+
+        PVector to = PVector.add(origin(), vector());
+        PVector dir = PVector.div(vector(), len);
+        PVector perp = new PVector(-dir.y, dir.x);
+
+        PVector mid = PVector.lerp(origin(), to, 0.5);
+        TeXIcon label = label();
+        float w = label.getIconWidth()  / camera.zoom;
+        float h = label.getIconHeight() / camera.zoom;
+
+        PVector anchor = PVector.add(mid, PVector.mult(perp, 0.1));  // small gap
+        anchor.x -= w * (1 - perp.x) / 2;
+        anchor.y -= h * (1 - perp.y) / 2;
+        return anchor;
+    }
+}
+
+interface UIArrow extends UIOffsetLabel {
     PVector vector();
     PVector origin();
     int strokeColor();
-    String label();
 
     default PVector dimensions() {
         return new PVector(abs(vector().x), abs(vector().y));
@@ -33,17 +73,8 @@ interface UIArrow extends UIElement {
         camera.graphics().line(origin().x, origin().y, to.x, to.y);
         camera.graphics().line(to.x, to.y, base.x + perp.x * head * 0.5, base.y + perp.y * head * 0.5);
         camera.graphics().line(to.x, to.y, base.x - perp.x * head * 0.5, base.y - perp.y * head * 0.5);
-        
-        PVector mid = PVector.lerp(origin(), to, 0.5);
-        TeXIcon label = latexIcon(label(), LABEL_SIZE);
-        float w = label.getIconWidth()  / camera.zoom;
-        float h = label.getIconHeight() / camera.zoom;
 
-        PVector anchor = PVector.add(mid, PVector.mult(perp, 0.1));  // small gap
-        anchor.x -= w * (1 - perp.x) / 2;
-        anchor.y -= h * (1 - perp.y) / 2;
-
-        camera.latex(label, anchor.x, anchor.y);
+        UIOffsetLabel.super.drawToScreen(camera, _position);
     }
 }
 

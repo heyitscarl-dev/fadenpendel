@@ -16,8 +16,8 @@ class ForceArrow implements UIArrow {
         return origin;
     }
 
-    String label() {
-        return label;
+    TeXIcon label() {
+        return latexIcon(label, LABEL_SIZE);
     }
 
     ForceArrow(int stroke, PVector vector, PVector origin, String label) {
@@ -28,7 +28,7 @@ class ForceArrow implements UIArrow {
     }
 }
 
-class Force implements Labeled {
+class Force {
     PVector origin;
     PVector vector;
     String label;
@@ -52,15 +52,5 @@ class Force implements Labeled {
 
     PVector getVector() {
         return vector;
-    }
-
-    public PVector getAttachmentPoint() {
-        PVector to = PVector.add(origin, vector);
-        PVector mid = PVector.lerp(origin, to, 0.5);
-        PVector perp = PVector.sub(to, origin);
-        perp.normalize();
-        perp = new PVector(-perp.y, perp.x);
-        mid = PVector.add(mid, PVector.mult(perp, 0.35));
-        return mid;
     }
 }

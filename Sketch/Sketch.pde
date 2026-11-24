@@ -10,9 +10,11 @@ UIOverlay defaultOverlay = new UIOverlay();
 UIContainer controls = new UIContainer(new PVector(50, 50));
 Toggle btnDrawVelocities = new Toggle("\\text{Velocities}");
 Toggle btnDrawForces = new Toggle("\\text{Forces}");
+Toggle btnDrawQuantities = new Toggle("\\text{Quantities}");
 
 UIOverlay velocityOverlay = new UIOverlay();
 UIOverlay forceOverlay = new UIOverlay();
+UIOverlay quantityOverlay = new UIOverlay();
 
 float last;
 
@@ -24,6 +26,7 @@ void setup() {
   // Initialisiert die UI
   controls.elements.add(btnDrawVelocities);
   controls.elements.add(btnDrawForces);
+  controls.elements.add(btnDrawQuantities);
   defaultOverlay.elements.add(controls);
 
   size(1280, 800);
@@ -84,6 +87,9 @@ void draw() {
   }
   if (btnDrawVelocities.state) {
     velocityOverlay.drawToScreen(cam);
+  }
+  if (btnDrawQuantities.state) {
+    quantityOverlay.drawToScreen(cam);
   }
   cam.leave();
 

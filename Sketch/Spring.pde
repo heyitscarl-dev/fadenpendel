@@ -1,10 +1,18 @@
-class Spring implements Labeled {
+class Spring implements UIOffsetLabel {
     public static final int PEAKS_PER_DISTANCE = 2;
 
     float stiffness;
     float length;
 
     Body a, b;
+
+    TeXIcon label() {
+        return latexIcon("l = " + round(length() * 10) / 10.0 + "\\,\\mathrm m", LABEL_SIZE);
+    }
+
+    // Das Label sitzt, wie bei den Pfeilen, mittig neben der Strecke a -> b.
+    PVector origin() { return a.position; }
+    PVector vector() { return PVector.sub(b.position, a.position); }
 
     Spring(float stiffness, Body a, Body b) {
         this.stiffness = stiffness;
@@ -38,28 +46,11 @@ class Spring implements Labeled {
 
     public void draw(Camera cam) {
         stroke(0);
-        // if (btnLabels.state()) {
-        //     draw_text("l = " + (round(length() * 10) / 10.0) + "\\,\\mathrm{m}", cam);
-        // }
-        
         if (this.stiffness >= 500) {
             draw_as_line(cam);
             return;
         }
         draw_as_spring(cam);
-    }
-
-    public PVector getAttachmentPoint() {
-        PVector mid = PVector.lerp(a.position, b.position, 0.5);
-        PVector perp = PVector.sub(b.position, a.position);
-        perp.normalize();
-        perp = new PVector(-perp.y, perp.x);
-        mid = PVector.add(mid, PVector.mult(perp, 0.35));
-        return mid;
-    }
-
-    private void draw_text(String text, Camera cam) {
-        cam.drawLabel(text, this.getAttachmentPoint());
     }
 
     private void draw_as_spring(Camera cam) {

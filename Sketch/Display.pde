@@ -25,6 +25,10 @@ class Display {
                 forceOverlay.elements.add(f.scaled(FORCE_SCALE).toArrow());
             }
         }
+        quantityOverlay.elements.clear();
+        for (Spring s : env.getSprings()) {
+            quantityOverlay.elements.add(s);
+        }
         
         cam.leave();
 

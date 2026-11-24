@@ -2,6 +2,7 @@ class ForceArrow implements UIArrow {
     int stroke;
     PVector vector;
     PVector origin;
+    String label;
 
     int strokeColor() {
         return stroke;
@@ -15,10 +16,15 @@ class ForceArrow implements UIArrow {
         return origin;
     }
 
-    ForceArrow(int stroke, PVector vector, PVector origin) {
+    String label() {
+        return label;
+    }
+
+    ForceArrow(int stroke, PVector vector, PVector origin, String label) {
         this.stroke = stroke;
         this.vector = vector;
         this.origin = origin;
+        this.label = label;
     }
 }
 
@@ -36,7 +42,7 @@ class Force implements Labeled {
     }
 
     ForceArrow toArrow() {
-        return new ForceArrow(this.stroke, this.vector, this.origin);
+        return new ForceArrow(this.stroke, this.vector, this.origin, this.label);
     }
 
     Force scaled(float scalar) {

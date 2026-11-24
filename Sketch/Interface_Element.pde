@@ -1,3 +1,5 @@
+static final float LABEL_SIZE = 16f;
+
 interface UIElement {
     void drawToScreen(Camera camera, PVector position);
     PVector dimensions();
@@ -8,6 +10,7 @@ interface UIArrow extends UIElement {
     PVector vector();
     PVector origin();
     int strokeColor();
+    String label();
 
     default PVector dimensions() {
         return new PVector(abs(vector().x), abs(vector().y));
@@ -30,6 +33,17 @@ interface UIArrow extends UIElement {
         camera.graphics().line(origin().x, origin().y, to.x, to.y);
         camera.graphics().line(to.x, to.y, base.x + perp.x * head * 0.5, base.y + perp.y * head * 0.5);
         camera.graphics().line(to.x, to.y, base.x - perp.x * head * 0.5, base.y - perp.y * head * 0.5);
+        
+        PVector mid = PVector.lerp(origin(), to, 0.5);
+        TeXIcon label = latexIcon(label(), LABEL_SIZE);
+        float w = label.getIconWidth()  / camera.zoom;
+        float h = label.getIconHeight() / camera.zoom;
+
+        PVector anchor = PVector.add(mid, PVector.mult(perp, 0.1));  // small gap
+        anchor.x -= w * (1 - perp.x) / 2;
+        anchor.y -= h * (1 - perp.y) / 2;
+
+        camera.latex(label, anchor.x, anchor.y);
     }
 }
 

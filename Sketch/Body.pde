@@ -6,6 +6,7 @@ class VelocityArrow implements UIArrow {
   PVector origin() { return origin; }
   PVector vector() { return vector; }
   int strokeColor() { return stroke; }
+  String label() { return "\\vec{v}=" + round(vector().mag() * 10) / 10.0 + "\\frac{\\mathrm m}{\\mathrm s}"; }
 
   VelocityArrow(PVector origin, PVector vector) {
     this.origin = origin;

@@ -28,6 +28,14 @@ class Camera {
     latex(tex, x, y, 16);
   }
 
+  void latex(TeXIcon icon, float x, float y) {
+    pushMatrix();
+    translate(x, y);
+    scale(1 / zoom, -1 / zoom);  // zurück auf Pixel und y-Spiegelung aufheben
+    latexScreen(icon, 0, 0);
+    popMatrix();
+  }
+
   // Zeichnet eine Formel an einer Position in Welt-Koordinaten
   // (nur zwischen cam.enter() und cam.leave() aufrufen).
   void latex(String tex, float x, float y, float size) {

@@ -8,7 +8,11 @@ Display display = new Display();
 
 UIOverlay defaultOverlay = new UIOverlay();
 UIContainer controls = new UIContainer(new PVector(50, 50));
-UIElement toggle = new Toggle("\\text{Velocities}");
+UIElement btnDrawVelocities = new Toggle("\\text{Velocities}");
+Toggle btnDrawForces = new Toggle("\\text{Forces}");
+
+UIOverlay velocityOverlay = new UIOverlay();
+UIOverlay forceOverlay = new UIOverlay();
 
 float last;
 
@@ -17,7 +21,9 @@ boolean doStep = false;
 static boolean luft = true;
 
 void setup() {
-  controls.elements.add(toggle);
+  // Initialisiert die UI
+  controls.elements.add(btnDrawVelocities);
+  controls.elements.add(btnDrawForces);
   defaultOverlay.elements.add(controls);
 
   size(1280, 800);
@@ -72,6 +78,12 @@ void draw() {
   }
   
   display.draw(cam);
+  cam.enter();
+  if (btnDrawForces.state) {
+    forceOverlay.drawToScreen(cam);
+  }
+  cam.leave();
+
   defaultOverlay.drawToScreen(cam);
 }
 

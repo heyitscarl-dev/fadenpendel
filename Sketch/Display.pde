@@ -17,9 +17,10 @@ class Display {
             b.draw(cam);
         }
 
+        forceOverlay.elements.clear();
         for (Body b : env.getBodies()) {
             for (Force f : b.lastForces) {
-            f.scaled(FORCE_SCALE).draw(cam);
+                forceOverlay.elements.add(f.scaled(FORCE_SCALE).toArrow());
             }
         }
         

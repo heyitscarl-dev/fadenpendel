@@ -4,6 +4,35 @@ interface UIElement {
     void handleClick(PVector position);
 }
 
+interface UIArrow extends UIElement {
+    PVector vector();
+    PVector origin();
+    int strokeColor();
+
+    default PVector dimensions() {
+        return new PVector(abs(vector().x), abs(vector().y));
+    }
+
+    default void handleClick(PVector position) {}
+    default void drawToScreen(Camera camera, PVector _position) {
+        float len = vector().mag();
+        if (len < 1e-6) return;
+
+        PVector to = PVector.add(origin(), vector());
+        PVector dir = PVector.div(vector(), len);
+        PVector perp = new PVector(-dir.y, dir.x);
+
+        float head = min(0.2, len * 0.2);
+        PVector base = PVector.sub(to, PVector.mult(dir, head));
+
+        camera.graphics().stroke(strokeColor());
+        camera.strokeWeight(1.5);
+        camera.graphics().line(origin().x, origin().y, to.x, to.y);
+        camera.graphics().line(to.x, to.y, base.x + perp.x * head * 0.5, base.y + perp.y * head * 0.5);
+        camera.graphics().line(to.x, to.y, base.x - perp.x * head * 0.5, base.y - perp.y * head * 0.5);
+    }
+}
+
 /* Ein "An/Aus Schalter" im Stil einer TikZ-Zeichnung: schwarze Konturen,
  * weiße bzw. hellgraue Flächen, keine Schatten. Wie
  *   \draw[thick, fill=black!10] (0,0) [rounded rectangle] ...;

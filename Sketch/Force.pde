@@ -1,3 +1,27 @@
+class ForceArrow implements UIArrow {
+    int stroke;
+    PVector vector;
+    PVector origin;
+
+    int strokeColor() {
+        return stroke;
+    }
+
+    PVector vector() {
+        return vector;
+    }
+
+    PVector origin() {
+        return origin;
+    }
+
+    ForceArrow(int stroke, PVector vector, PVector origin) {
+        this.stroke = stroke;
+        this.vector = vector;
+        this.origin = origin;
+    }
+}
+
 class Force implements Labeled {
     PVector origin;
     PVector vector;
@@ -11,6 +35,10 @@ class Force implements Labeled {
         this.stroke = stroke;
     }
 
+    ForceArrow toArrow() {
+        return new ForceArrow(this.stroke, this.vector, this.origin);
+    }
+
     Force scaled(float scalar) {
         PVector updated = PVector.mult(this.vector, scalar);
         return new Force(origin, updated, label, stroke);
@@ -18,13 +46,6 @@ class Force implements Labeled {
 
     PVector getVector() {
         return vector;
-    }
-
-    public void draw(Camera cam) {
-        // if (!btnForceArrows.state()) return;
-
-        cam.drawArrow(origin, vector, this.stroke);
-        cam.drawLabel(label, this.getAttachmentPoint());
     }
 
     public PVector getAttachmentPoint() {

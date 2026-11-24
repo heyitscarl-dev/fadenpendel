@@ -60,7 +60,7 @@ class Body {
 
     midpoint = PVector.add(midpoint, PVector.mult(perp, 0.35));
 
-    cam.drawArrow(position, velocity, COLOR_VELOCITY);
-    cam.drawLabel("\\vec{v} = " + round(velocity.mag() * 10) / 10.0 + "\\,\\frac ms", midpoint);
+    // cam.drawArrow(position, velocity, COLOR_VELOCITY);
+    // cam.drawLabel("\\vec{v} = " + round(velocity.mag() * 10) / 10.0 + "\\,\\frac ms", midpoint);
   }
 }

@@ -19,13 +19,14 @@ class Display {
 
         forceOverlay.elements.clear();
         velocityOverlay.elements.clear();
+        quantityOverlay.elements.clear();
         for (Body b : env.getBodies()) {
             velocityOverlay.elements.add(b.toVelocityArrow());
+            quantityOverlay.elements.add(b);
             for (Force f : b.lastForces) {
                 forceOverlay.elements.add(f.scaled(FORCE_SCALE).toArrow());
             }
         }
-        quantityOverlay.elements.clear();
         for (Spring s : env.getSprings()) {
             quantityOverlay.elements.add(s);
         }

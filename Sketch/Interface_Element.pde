@@ -2,25 +2,25 @@ static final float LABEL_SIZE = 16f;
 
 interface UIElement {
     void drawToScreen(Camera camera, PVector position);
-    PVector dimensions();
-    void handleClick(PVector position);
+    PVector dimensions(Camera camera);
+    void handleClick(Camera camera, PVector position);
 }
 
 interface UILabel extends UIElement {
-    TeXIcon label();
+    TeXIcon label(Camera camera);
     PVector anchor(Camera camera);  // Linke untere Ecke des Labels in Welt-Koordinaten
 
     default void drawToScreen(Camera camera, PVector position) {
         PVector anchor = anchor(camera);
-        camera.latex(label(), anchor.x, anchor.y);
+        camera.latex(label(camera), anchor.x, anchor.y);
     }
 
-    default PVector dimensions() {
-        TeXIcon label = label();
+    default PVector dimensions(Camera camera) {
+        TeXIcon label = label(camera);
         return new PVector(label.getIconWidth(), label.getIconHeight());
     }
 
-    default void handleClick(PVector position) {}
+    default void handleClick(Camera camera, PVector position) {}
 }
 
 interface UIOffsetLabel extends UILabel {
@@ -36,7 +36,7 @@ interface UIOffsetLabel extends UILabel {
         PVector perp = new PVector(-dir.y, dir.x);
 
         PVector mid = PVector.lerp(origin(), to, 0.5);
-        TeXIcon label = label();
+        TeXIcon label = label(camera);
         float w = label.getIconWidth()  / camera.zoom;
         float h = label.getIconHeight() / camera.zoom;
 
@@ -56,7 +56,7 @@ interface UIArrow extends UIOffsetLabel {
         return new PVector(abs(vector().x), abs(vector().y));
     }
 
-    default void handleClick(PVector position) {}
+    default void handleClick(Camera camera, PVector position) {}
     default void drawToScreen(Camera camera, PVector _position) {
         float len = vector().mag();
         if (len < 1e-6) return;
@@ -112,7 +112,7 @@ class Toggle implements UIElement {
         this.label = latexIcon(label, LABEL_SIZE);
     }
 
-    void handleClick(PVector position) {
+    void handleClick(Camera camera, PVector position) {
         if (contains(position.x, position.y)) toggle();
     }
 
@@ -156,7 +156,7 @@ class Toggle implements UIElement {
         camera.latexScreen(this.label, position.x + WIDTH + LABEL_INNER_MARGIN, position.y + HEIGHT / 1.2);
     }
 
-    PVector dimensions() {
+    PVector dimensions(Camera camera) {
         return new PVector(WIDTH + label.getIconWidth() + LABEL_INNER_MARGIN, HEIGHT);
     }
 }

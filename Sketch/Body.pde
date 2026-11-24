@@ -6,7 +6,7 @@ class VelocityArrow implements UIArrow {
   PVector origin() { return origin; }
   PVector vector() { return vector; }
   int strokeColor() { return stroke; }
-  TeXIcon label() { return latexIcon("\\vec{v}=" + round(vector().mag() * 10) / 10.0 + "\\frac{\\mathrm m}{\\mathrm s}", LABEL_SIZE); }
+  TeXIcon label(Camera camera) { return latexIcon("\\vec{v}=" + round(vector().mag() * 10) / 10.0 + "\\frac{\\mathrm m}{\\mathrm s}", LABEL_SIZE); }
 
   VelocityArrow(PVector origin, PVector vector) {
     this.origin = origin;
@@ -14,7 +14,7 @@ class VelocityArrow implements UIArrow {
   }
 }
 
-class Body {
+class Body implements UILabel {
   String identifier;
   float mass;
   float radius;
@@ -24,7 +24,20 @@ class Body {
   ArrayList<Force> lastForces;
   public boolean fixed;
 
-  Body(float mass, float radius, boolean fixed) {
+  TeXIcon label(Camera camera) {
+    return latexIcon(identifier /* + "=" + round(mass * 10)/10.0 + "\\,\\mathrm kg" */, LABEL_SIZE * 0.825 / 50 * camera.zoom);
+  }
+
+  PVector anchor(Camera camera) {
+      TeXIcon label = label(camera);
+      float w = label.getIconWidth()  / camera.zoom;
+      float h = label.getIconHeight() / camera.zoom;
+      return new PVector(position.x - w / 2, position.y - h / 2);
+  }
+
+  Body(String identifier, float mass, float radius, boolean fixed) {
+    this.identifier = identifier;
+
     this.mass = mass; //Masse Definieren
     this.radius = radius; //Groesse Definieren
     

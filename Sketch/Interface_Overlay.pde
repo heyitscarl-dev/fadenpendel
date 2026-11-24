@@ -10,7 +10,7 @@ class UIOverlay {
         elements.forEach(e -> e.drawToScreen(camera, null));
     }
 
-    public void handleClick(PVector position) {
-        elements.forEach(e -> e.handleClick(position));
+    public void handleClick(Camera camera, PVector position) {
+        elements.forEach(e -> e.handleClick(camera, position));
     }
 }

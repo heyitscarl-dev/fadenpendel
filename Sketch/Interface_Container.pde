@@ -10,12 +10,12 @@ class UIContainer implements UIElement {
         this.position = position;
     }
 
-    public PVector dimensions() {
+    public PVector dimensions(Camera camera) {
         PVector dimensions = new PVector(0f, 0f);
         for (UIElement e : elements) {
-            PVector elementDimensions = e.dimensions();
+            PVector elementDimensions = e.dimensions(camera);
             if (elementDimensions.x > dimensions.x) dimensions.x = elementDimensions.x;
-            dimensions.y += UI_CONTAINER_MARGIN + e.dimensions().y;
+            dimensions.y += UI_CONTAINER_MARGIN + e.dimensions(camera).y;
         }
         if (elements.size() != 0) dimensions.y -= UI_CONTAINER_MARGIN; // Entfernt die letzte margin.
         dimensions.add(UI_CONTAINER_PADDING);
@@ -23,15 +23,15 @@ class UIContainer implements UIElement {
         return dimensions;
     }
 
-    boolean contains(float x, float y) {
-        PVector dimensions = this.dimensions();
+    boolean contains(Camera camera, float x, float y) {
+        PVector dimensions = this.dimensions(camera);
         return x >= position.x && x <= position.x + dimensions.x
             && y >= position.y && y <= position.y + dimensions.y;
     }
 
-    void handleClick(PVector position) {
-        if (contains(position.x, position.y)) {
-            elements.forEach(e -> e.handleClick(position));
+    void handleClick(Camera camera, PVector position) {
+        if (contains(camera, position.x, position.y)) {
+            elements.forEach(e -> e.handleClick(camera, position));
         }
     }
 
@@ -39,13 +39,13 @@ class UIContainer implements UIElement {
         fill(THEME_PANEL);
         stroke(THEME_PANEL_EDGE);
         strokeWeight(0.5);
-        PVector dimensions = dimensions();
+        PVector dimensions = dimensions(camera);
         rect(this.position.x, this.position.y, dimensions.x, dimensions.y, UI_CONTAINER_BORDER_RADIUS);
         
         float height = UI_CONTAINER_PADDING.y;
         for (UIElement e : this.elements) {
             e.drawToScreen(camera, PVector.add(position, new PVector(UI_CONTAINER_PADDING.x, height)));
-            height += e.dimensions().y + UI_CONTAINER_MARGIN;
+            height += e.dimensions(camera).y + UI_CONTAINER_MARGIN;
         }
     }
 }

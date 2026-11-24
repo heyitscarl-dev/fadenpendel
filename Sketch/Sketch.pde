@@ -35,13 +35,13 @@ void setup() {
   // Der "Anker". An ihm ist der "Faden" und somit das
   // Pendel befestigt. `fixed == true`, daher bewegt sich
   // dieser Körper nicht.
-  Body body = new Body(1.0, 0.25, true);
+  Body body = new Body("m", 1.0, 0.25, true);
   body.setPosition(new PVector(0, 2.5));
   env.addBody(body);
 
   // Der Schwingkörper. Er ist auch an dem "Faden" befestigt
   // und teil des Pendels. `fixed == false`
-  Body dragged = new Body(5.0, 0.25, false);
+  Body dragged = new Body("m_1", 5.0, 0.25, false);
   dragged.setPosition(new PVector(-2.5, 2.5));
   env.addBody(dragged);
 
@@ -97,7 +97,7 @@ void draw() {
 }
 
 void mousePressed() {
-  defaultOverlay.handleClick(new PVector(mouseX, mouseY));
+  defaultOverlay.handleClick(cam, new PVector(mouseX, mouseY));
 }
 
 void mouseDragged() {

@@ -16,7 +16,7 @@ class ForceArrow implements UIArrow {
         return origin;
     }
 
-    TeXIcon label() {
+    TeXIcon label(Camera camera) {
         return latexIcon(label, LABEL_SIZE);
     }
 

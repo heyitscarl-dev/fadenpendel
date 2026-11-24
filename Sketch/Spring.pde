@@ -6,7 +6,7 @@ class Spring implements UIOffsetLabel {
 
     Body a, b;
 
-    TeXIcon label() {
+    TeXIcon label(Camera camera) {
         return latexIcon("l = " + round(length() * 10) / 10.0 + "\\,\\mathrm m", LABEL_SIZE);
     }
 

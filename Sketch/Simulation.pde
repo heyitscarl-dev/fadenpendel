@@ -14,37 +14,37 @@ void tick(float dt) {
 
     for (Body body : env.getBodies()) {    
         if (body.fixed) {
-        body.clearForces();
-        continue;
+            body.clearForces();
+            continue;
         }
 
         // Kräfte
         body.forces.add(new Force(
-        body.position,
-        new PVector(0.0, -env.gravity * body.mass),
-        "|F_g|=" + round((env.gravity * body.mass) * 10)/10.0 + "\\,\\mathrm{N}",
-        color(255, 0, 0)
+            body.position,
+            new PVector(0.0, -env.gravity * body.mass),
+            "|F_g|=" + round((env.gravity * body.mass) * 10)/10.0 + "\\,\\mathrm{N}",
+            color(255, 0, 0)
         )); // Gewichtskraft
 
         float velocity = body.velocity.mag();
         float dragFactor = -0.5 * 1.204 * 0.4 * PI * body.radius * body.radius * velocity; // nur 1x velocity, weil body.velocity später multipliziert wird
         PVector drag = PVector.mult(body.velocity, dragFactor);
         body.forces.add(new Force(
-        body.position,
-        drag,
+            body.position,
+            drag,
         "|F_L|=" + round(drag.mag()*10)/10.0 + "\\,\\mathrm{N}",
         color(0, 0, 255)
         )); // Luftwiderstand
-        }
 
         PVector Fliehkraft = PVector.mult(body.position, body.mass * sq(velocity) / body.radius);
-        body.forces.add(new Force(body.position ,body.position, "|F_f|=" + round(Fliehkraft.mag()*10)/10.0 + "\\,\\mathrm{N}"));
+        body.forces.add(new Force(body.position ,body.position, "|F_f|=" + round(Fliehkraft.mag()*10)/10.0 + "\\,\\mathrm{N}", color(255, 255, 0)));
+        
         //Fliehkraft
 
         // Resultierende Kraft berechnen 
         PVector res = new PVector(0.0, 0.0);
         for (Force f : body.forces) {
-        res = res.add(f.getVector());
+            res = res.add(f.getVector());
         }
         
         body.clearForces();

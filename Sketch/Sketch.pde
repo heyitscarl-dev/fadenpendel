@@ -51,7 +51,7 @@ void setup() {
    * auch interessante ergebnisse.
   */
   
-  float stiffness = 20.0;
+  float stiffness = 500.0;
   Spring spring = new Spring(stiffness, body, dragged);
   env.addSpring(spring);
   

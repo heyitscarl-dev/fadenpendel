@@ -24,10 +24,6 @@ class Body implements UILabel {
   ArrayList<Force> lastForces;
   public boolean fixed;
 
-  boolean visible() {
-    return !fixed; 
-  }
-
   TeXIcon label(Camera camera) {
     return latexIcon(identifier /* + "=" + round(mass * 10)/10.0 + "\\,\\mathrm kg" */, LABEL_SIZE * 0.825 / 50 * camera.zoom);
   }

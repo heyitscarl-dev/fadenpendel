@@ -38,11 +38,14 @@ void tick(float dt) {
                 continue;
             }
 
-            float e = 1.0;  // perfekt elastisch
+            float e = 0.4;
             float j = -(1 + e) * vRel / (1/b1.mass + 1/b2.mass);
             
             b1.velocity = PVector.sub(b1.velocity, PVector.mult(normal, j / b1.mass));
             b2.velocity = PVector.add(b2.velocity, PVector.mult(normal, j / b2.mass));
+
+            b1.position = PVector.sub(b1.position, PVector.mult(normal, error));
+            b2.position = PVector.add(b2.position, PVector.mult(normal, error));
         }
     }
 

@@ -1,6 +1,7 @@
-final float STEP = 1.0 / (2 * 240.0);
+final float STEP = 1.0 / (1000.0);
 final float FORCE_SCALE = 0.075 / 2.0;
 float accumulator = 0.0;
+float speed = 1.0;
 
 Environment initial = new Environment();
 Environment env = new Environment();
@@ -54,6 +55,14 @@ void setup() {
   body2.setPosition(new PVector(2.5+0.25, 2.5));
   env.addBody(body2);
 
+  Body body3 = new Body("m_3", 5.0, 0.25, false);
+  body3.setPosition(new PVector(-5-0.25, 2.5));
+  // env.addBody(body3);
+
+  Body body4 = new Body("m_4", 5.0, 0.25, false);
+  body4.setPosition(new PVector(5+0.25, 2.5));
+  // env.addBody(body4);
+
   /* Einen Fanden zu simulieren hat sich als relativ schwierig
    * herausgestellt. Daher wird ein Faden hier als Feder, mit enorm
    * hoher Federkonstante simuliert. Nierdrige Federkonstanten ergeben
@@ -65,6 +74,10 @@ void setup() {
   env.addSpring(spring1);
   Spring spring2 = new Spring(stiffness, anchor2, body2);
   env.addSpring(spring2);
+  Spring spring3 = new Spring(stiffness, body1, body3);
+  // env.addSpring(spring3);
+  Spring spring4 = new Spring(stiffness, body2, body4);
+  // env.addSpring(spring4);
   
   initial = env.copy();
 
@@ -87,10 +100,10 @@ void draw() {
   
   // 240 Steps pro Sekunde. Pro Frame werden alle Steps "aufgeholt", die während Δd hätten
   // passieren müssen.
-  accumulator += dt;
+  accumulator += speed * dt;
   while (accumulator >= STEP) {
-    tick(STEP); // (siehe Sketch/Simulation.pde)
-    accumulator -= STEP;
+    tick(STEP / speed); // (siehe Sketch/Simulation.pde)
+    accumulator -= STEP / speed;
   }
   
   display.draw(cam);

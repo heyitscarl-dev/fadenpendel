@@ -34,50 +34,29 @@ void setup() {
   size(1280, 800);
   pixelDensity(2);
 
-  // Der "Anker". An ihm ist der "Faden" und somit das
-  // Pendel befestigt. `fixed == true`, daher bewegt sich
-  // dieser Körper nicht.
-  Body anchor1 = new Body("m_{f1}", 1.0, 0.25, true);
-  anchor1.setPosition(new PVector(-0.25, 2.5));
-  env.addBody(anchor1);
+  for (int i = 0; i < 5; i++) {
+    Body nAnchor = new Body("a_" + i, 1.0, 0.25, true);
+    nAnchor.setPosition(new PVector(0.5 * i, 2.5));
+    env.addBody(nAnchor);
 
-  Body anchor2 = new Body("m_{f2}", 1.0, 0.25, true);
-  anchor2.setPosition(new PVector(0.25, 2.5));
-  env.addBody(anchor2);
+    Body nBody = new Body("m_" + i, 1.0, 0.25, false);
+    nBody.setPosition(new PVector(0.5 * i, 0));
+    env.addBody(nBody);
 
-  // Der Schwingkörper. Er ist auch an dem "Faden" befestigt
-  // und teil des Pendels. `fixed == false`
-  Body body1 = new Body("m_1", 5.0, 0.25, false);
-  body1.setPosition(new PVector(-2.5-0.25, 2.5));
-  env.addBody(body1);
+    Spring nSpring = new Spring(THREAD_STIFFNESS, nAnchor, nBody);
+    env.addSpring(nSpring);
+  }
 
-  Body body2 = new Body("m_2", 5.0, 0.25, false);
-  body2.setPosition(new PVector(2.5+0.25, 2.5));
-  env.addBody(body2);
+  Body anchor = new Body("a_5", 1.0, 0.25, true);
+  anchor.setPosition(new PVector(0.5 * 5, 2.5));
+  env.addBody(anchor);
 
-  Body body3 = new Body("m_3", 5.0, 0.25, false);
-  body3.setPosition(new PVector(-5-0.25, 2.5));
-  // env.addBody(body3);
+  Body body = new Body("m_5", 1.0, 0.25, false);
+  body.setPosition(new PVector(0.5 * 5 + 2.5, 2.5));
+  env.addBody(body);
 
-  Body body4 = new Body("m_4", 5.0, 0.25, false);
-  body4.setPosition(new PVector(5+0.25, 2.5));
-  // env.addBody(body4);
-
-  /* Einen Fanden zu simulieren hat sich als relativ schwierig
-   * herausgestellt. Daher wird ein Faden hier als Feder, mit enorm
-   * hoher Federkonstante simuliert. Nierdrige Federkonstanten ergeben
-   * auch interessante ergebnisse.
-  */
-  
-  float stiffness = THREAD_STIFFNESS;
-  Spring spring1 = new Spring(stiffness, anchor1, body1);
-  env.addSpring(spring1);
-  Spring spring2 = new Spring(stiffness, anchor2, body2);
-  env.addSpring(spring2);
-  Spring spring3 = new Spring(stiffness, body1, body3);
-  // env.addSpring(spring3);
-  Spring spring4 = new Spring(stiffness, body2, body4);
-  // env.addSpring(spring4);
+  Spring spring = new Spring(THREAD_STIFFNESS, anchor, body);
+  env.addSpring(spring);
   
   initial = env.copy();
 

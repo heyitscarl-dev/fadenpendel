@@ -38,7 +38,7 @@ void tick(float dt) {
                 continue;
             }
 
-            float e = 0.4;
+            float e = 1.0;
             float j = -(1 + e) * vRel / (1/b1.mass + 1/b2.mass);
             
             b1.velocity = PVector.sub(b1.velocity, PVector.mult(normal, j / b1.mass));

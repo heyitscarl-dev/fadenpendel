@@ -36,23 +36,23 @@ void setup() {
   // Der "Anker". An ihm ist der "Faden" und somit das
   // Pendel befestigt. `fixed == true`, daher bewegt sich
   // dieser Körper nicht.
-  Body body = new Body("m", 1.0, 0.25, true);
-  body.setPosition(new PVector(0, 2.5));
-  env.addBody(body);
+  Body anchor1 = new Body("m_{f1}", 1.0, 0.25, true);
+  anchor1.setPosition(new PVector(-0.25, 2.5));
+  env.addBody(anchor1);
+
+  Body anchor2 = new Body("m_{f2}", 1.0, 0.25, true);
+  anchor2.setPosition(new PVector(0.25, 2.5));
+  env.addBody(anchor2);
 
   // Der Schwingkörper. Er ist auch an dem "Faden" befestigt
   // und teil des Pendels. `fixed == false`
   Body body1 = new Body("m_1", 5.0, 0.25, false);
-  body1.setPosition(new PVector(-2.5, 2.5));
+  body1.setPosition(new PVector(-2.5-0.25, 2.5));
   env.addBody(body1);
 
   Body body2 = new Body("m_2", 5.0, 0.25, false);
-  body2.setPosition(new PVector(-5, 2.5));
+  body2.setPosition(new PVector(2.5+0.25, 2.5));
   env.addBody(body2);
-
-  Body body3 = new Body("m_3", 5.0, 0.25, false);
-  body3.setPosition(new PVector(-7.5, 2.5));
-  env.addBody(body3);
 
   /* Einen Fanden zu simulieren hat sich als relativ schwierig
    * herausgestellt. Daher wird ein Faden hier als Feder, mit enorm
@@ -61,12 +61,10 @@ void setup() {
   */
   
   float stiffness = THREAD_STIFFNESS;
-  Spring spring1 = new Spring(stiffness, body, body1);
+  Spring spring1 = new Spring(stiffness, anchor1, body1);
   env.addSpring(spring1);
-  Spring spring2 = new Spring(20.0, body1, body2);
+  Spring spring2 = new Spring(stiffness, anchor2, body2);
   env.addSpring(spring2);
-  Spring spring3 = new Spring(stiffness, body2, body3);
-  env.addSpring(spring3);
   
   initial = env.copy();
 

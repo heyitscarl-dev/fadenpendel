@@ -1,16 +1,51 @@
-class Spring implements Labeled {
+final float THREAD_STIFFNESS = 4 * 7500.0;
+
+class Spring implements UIOffsetLabel {
     public static final int PEAKS_PER_DISTANCE = 2;
 
     float stiffness;
     float length;
+    float damping;
 
     Body a, b;
 
+    TeXIcon label(Camera camera) {
+        return latexIcon("l = " + round(length() * 10) / 10.0 + "\\,\\mathrm m", LABEL_SIZE);
+    }
+
+    // Das Label sitzt, wie bei den Pfeilen, mittig neben der Strecke a -> b.
+    PVector origin() { return a.position; }
+    PVector vector() { return PVector.sub(b.position, a.position); }
+
     Spring(float stiffness, Body a, Body b) {
+        float zeta;
+        if (stiffness > THREAD_STIFFNESS) zeta = 1.0;
+        else zeta = 0.0;
+
+        // c = 2*\zeta \sqrt{k*\mu}
+        float mu;
+        if (a.fixed) mu = b.mass;
+        else if (b.fixed) mu = a.mass;
+        else mu = (a.mass * b.mass) / (a.mass + b.mass);
+
+        float damping = 2 * zeta * sqrt(stiffness * mu);
         this.stiffness = stiffness;
+        this.damping = damping;
         this.a = a;
         this.b = b;
+
         this.length = length();
+    }
+
+    // Kopie, die zwischen den Körpern `a` und `b` (aus dem kopierten
+    // Environment) hängt. Steifigkeit, Dämpfung und Ruhelänge werden
+    // übernommen statt neu berechnet, weil der Konstruktor die Ruhelänge
+    // aus den *aktuellen* Positionen bestimmt.
+    Spring copy(Body a, Body b) {
+        Spring copy = new Spring(stiffness, a, b);
+        copy.damping = damping;
+        copy.length = length;
+        return copy;
     }
 
     /// Return a -> b as [0]
@@ -22,9 +57,14 @@ class Spring implements Labeled {
         float distance = PVector.dist(a, b);
         float error = distance - length;
 
-        float f = error * -(stiffness);
         PVector normal = PVector.sub(b, a);
         normal.normalize();
+
+        PVector vRel = PVector.sub(this.b.velocity, this.a.velocity);
+        float vAlong = vRel.dot(normal);
+
+        float f = error * -(stiffness) - damping * vAlong;
+
         PVector force = PVector.mult(normal, f);
 
         String mag = "" + round(force.mag() * 10) / 10.0;
@@ -38,28 +78,11 @@ class Spring implements Labeled {
 
     public void draw(Camera cam) {
         stroke(0);
-        if (btnLabels.state()) {
-            draw_text("l = " + (round(length() * 10) / 10.0) + "\\,\\mathrm{m}", cam);
-        }
-        
         if (this.stiffness >= 500) {
             draw_as_line(cam);
             return;
         }
         draw_as_spring(cam);
-    }
-
-    public PVector getAttachmentPoint() {
-        PVector mid = PVector.lerp(a.position, b.position, 0.5);
-        PVector perp = PVector.sub(b.position, a.position);
-        perp.normalize();
-        perp = new PVector(-perp.y, perp.x);
-        mid = PVector.add(mid, PVector.mult(perp, 0.35));
-        return mid;
-    }
-
-    private void draw_text(String text, Camera cam) {
-        cam.drawLabel(text, this.getAttachmentPoint());
     }
 
     private void draw_as_spring(Camera cam) {

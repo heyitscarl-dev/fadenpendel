@@ -34,4 +34,22 @@ class Environment {
   ArrayList<Spring> getSprings() {
     return this.springs;
   }
+
+  // Tiefe Kopie des gesamten Environments. Die Federn der Kopie hängen an
+  // den *kopierten* Körpern; die Zuordnung läuft über den Index in `bodies`.
+  Environment copy() {
+    Environment copy = new Environment(gravity);
+
+    for (Body body : bodies) {
+      copy.addBody(body.copy());
+    }
+
+    for (Spring spring : springs) {
+      Body a = copy.getBody(bodies.indexOf(spring.a));
+      Body b = copy.getBody(bodies.indexOf(spring.b));
+      copy.addSpring(spring.copy(a, b));
+    }
+
+    return copy;
+  }
 }

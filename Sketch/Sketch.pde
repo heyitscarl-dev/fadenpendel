@@ -1,38 +1,58 @@
-final float STEP = 1.0 / 240.0;
-final float FORCE_SCALE = 0.075;
+final float STEP = 1.0 / (2 * 240.0);
+final float FORCE_SCALE = 0.075 / 2.0;
 float accumulator = 0.0;
 
+Environment initial = new Environment();
 Environment env = new Environment();
 Camera cam = new Camera();
 Display display = new Display();
 
-Button btnVelocityArrows  = new Button(false, "Velocities", new PVector(50, 50));
-Button btnForceArrows     = new Button(false, "Forces", new PVector(50, 100));
-Button btnLabels          = new Button(false, "Labels", new PVector(50, 150));
+UIOverlay defaultOverlay = new UIOverlay();
+UIContainer controls = new UIContainer(new PVector(50, 50));
+Toggle btnDrawVelocities = new Toggle(false, "\\text{Velocities}");
+Toggle btnDrawForces = new Toggle(false, "\\text{Forces}");
+Toggle btnDrawQuantities = new Toggle(true, "\\text{Quantities}");
 
+UIOverlay velocityOverlay = new UIOverlay();
+UIOverlay forceOverlay = new UIOverlay();
+UIOverlay quantityOverlay = new UIOverlay();
 
 float last;
 
-boolean running = true;
+boolean running = false;
 boolean doStep = false;
 static boolean luft = false;
 
 void setup() {
+  // Initialisiert die UI
+  controls.elements.add(btnDrawVelocities);
+  controls.elements.add(btnDrawForces);
+  controls.elements.add(btnDrawQuantities);
+  defaultOverlay.elements.add(controls);
+
   size(1280, 800);
   pixelDensity(2);
 
   // Der "Anker". An ihm ist der "Faden" und somit das
   // Pendel befestigt. `fixed == true`, daher bewegt sich
   // dieser Körper nicht.
-  Body body = new Body(1.0, 0.25, true);
+  Body body = new Body("m", 1.0, 0.25, true);
   body.setPosition(new PVector(0, 2.5));
   env.addBody(body);
 
   // Der Schwingkörper. Er ist auch an dem "Faden" befestigt
   // und teil des Pendels. `fixed == false`
-  Body dragged = new Body(5.0, 0.25, false);
-  dragged.setPosition(new PVector(-2.5, 2.5));
-  env.addBody(dragged);
+  Body body1 = new Body("m_1", 5.0, 0.25, false);
+  body1.setPosition(new PVector(-2.5, 2.5));
+  env.addBody(body1);
+
+  Body body2 = new Body("m_2", 5.0, 0.25, false);
+  body2.setPosition(new PVector(-5, 2.5));
+  env.addBody(body2);
+
+  Body body3 = new Body("m_3", 5.0, 0.25, false);
+  body3.setPosition(new PVector(-7.5, 2.5));
+  env.addBody(body3);
 
   /* Einen Fanden zu simulieren hat sich als relativ schwierig
    * herausgestellt. Daher wird ein Faden hier als Feder, mit enorm
@@ -40,10 +60,16 @@ void setup() {
    * auch interessante ergebnisse.
   */
   
-  float stiffness = 500.0;
-  Spring spring = new Spring(stiffness, body, dragged);
-  env.addSpring(spring);
+  float stiffness = THREAD_STIFFNESS;
+  Spring spring1 = new Spring(stiffness, body, body1);
+  env.addSpring(spring1);
+  Spring spring2 = new Spring(20.0, body1, body2);
+  env.addSpring(spring2);
+  Spring spring3 = new Spring(stiffness, body2, body3);
+  env.addSpring(spring3);
   
+  initial = env.copy();
+
   // Um dt (Δd; delta time), also die Zeitdifferenz der letzten Frames
   // zu berrechnen (wodurch die Simulation konstant und unabhängig von 
   // der Bildrate/FPS sein kann), muss der Zeitpunkt des letzten Frames 
@@ -70,15 +96,23 @@ void draw() {
   }
   
   display.draw(cam);
-  btnVelocityArrows.draw(cam);
-  btnForceArrows.draw(cam);
-  btnLabels.draw(cam);
+  cam.enter();
+  if (btnDrawForces.state) {
+    forceOverlay.drawToScreen(cam);
+  }
+  if (btnDrawVelocities.state) {
+    velocityOverlay.drawToScreen(cam);
+  }
+  if (btnDrawQuantities.state) {
+    quantityOverlay.drawToScreen(cam);
+  }
+  cam.leave();
+
+  defaultOverlay.drawToScreen(cam);
 }
 
 void mousePressed() {
-  btnVelocityArrows.handleMousePressed();
-  btnForceArrows.handleMousePressed();
-  btnLabels.handleMousePressed();
+  defaultOverlay.handleClick(cam, new PVector(mouseX, mouseY));
 }
 
 void mouseDragged() {
@@ -93,6 +127,11 @@ void mouseWheel(MouseEvent e) {
 void keyPressed() {
   if (key == ' ') {
     running = !running;
+  }
+
+  if (key == 'r') {
+    env = initial.copy();
+    running = false;
   }
 
   if (!running && keyCode == ENTER) {

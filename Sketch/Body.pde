@@ -1,6 +1,20 @@
-final int COLOR_VELOCITY = color(151, 66, 135);
+class VelocityArrow implements UIArrow {
+  final int stroke = color(151, 66, 135);
+  PVector origin;
+  PVector vector;
 
-class Body {
+  PVector origin() { return origin; }
+  PVector vector() { return vector; }
+  int strokeColor() { return stroke; }
+  TeXIcon label(Camera camera) { return latexIcon("\\vec{v}=" + round(vector().mag() * 10) / 10.0 + "\\frac{\\mathrm m}{\\mathrm s}", LABEL_SIZE); }
+
+  VelocityArrow(PVector origin, PVector vector) {
+    this.origin = origin;
+    this.vector = vector;
+  }
+}
+
+class Body implements UILabel {
   String identifier;
   float mass;
   float radius;
@@ -10,7 +24,20 @@ class Body {
   ArrayList<Force> lastForces;
   public boolean fixed;
 
-  Body(float mass, float radius, boolean fixed) {
+  TeXIcon label(Camera camera) {
+    return latexIcon(identifier /* + "=" + round(mass * 10)/10.0 + "\\,\\mathrm kg" */, LABEL_SIZE * 0.825 / 50 * camera.zoom);
+  }
+
+  PVector anchor(Camera camera) {
+      TeXIcon label = label(camera);
+      float w = label.getIconWidth()  / camera.zoom;
+      float h = label.getIconHeight() / camera.zoom;
+      return new PVector(position.x - w / 2, position.y - h / 2);
+  }
+
+  Body(String identifier, float mass, float radius, boolean fixed) {
+    this.identifier = identifier;
+
     this.mass = mass; //Masse Definieren
     this.radius = radius; //Groesse Definieren
     
@@ -22,6 +49,16 @@ class Body {
     this.fixed = fixed;
   }
   
+  // Tiefe Kopie: Position und Geschwindigkeit werden als neue PVectors
+  // angelegt, damit Original und Kopie sich nicht gegenseitig verändern.
+  // Kräfte starten leer, sie werden in jedem Tick neu berechnet.
+  Body copy() {
+    Body copy = new Body(identifier, mass, radius, fixed);
+    copy.position = position.copy();
+    copy.velocity = velocity.copy();
+    return copy;
+  }
+
   void setPosition(PVector updated) {
     this.position = updated;
   }
@@ -47,20 +84,28 @@ class Body {
     forces.clear();
   }
 
-  void draw(Camera cam) {
-    circle(position.x, position.y, radius * 2);
+  void draw(Camera camera) {
+    if (fixed) drawFixed(camera);
+    else circle(position.x, position.y, radius * 2);
+  }
+  
+  void drawFixed(Camera camera) {
+    float width = 2 * radius;
+    float h = 0.1;                 // Höhe der Schraffur und ungefährer Abstand
+    int n = max(1, round(width / h));
+    float gap = (width - h) / max(1, n - 1);
+
+    camera.strokeWeight(1.5);
+    line(position.x - radius, position.y, position.x + radius, position.y);
     
-    if (btnVelocityArrows.state() == false) return;
-    if (velocity.mag() == 0) return;
+    camera.strokeWeight(0.75);
+    for (int i = 0; i < n; i++) {
+      float x = position.x - radius + i * gap;
+      line(x, position.y, x + h, position.y + h);
+    }
+  }
 
-    PVector midpoint = PVector.add(position, PVector.mult(velocity, 0.5));
-    PVector perp = velocity.copy();
-    perp.normalize();
-    perp = new PVector(-perp.y, perp.x);
-
-    midpoint = PVector.add(midpoint, PVector.mult(perp, 0.35));
-
-    cam.drawArrow(position, velocity, COLOR_VELOCITY);
-    cam.drawLabel("\\vec{v} = " + round(velocity.mag() * 10) / 10.0 + "\\,\\frac ms", midpoint);
+  VelocityArrow toVelocityArrow() {
+    return new VelocityArrow(position, velocity);
   }
 }

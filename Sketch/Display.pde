@@ -6,7 +6,7 @@ class Display {
 
     void draw(Camera cam) {
         cam.enter();
-        background(255, 255, 255);
+        background(THEME_BACKGROUND);
 
         for (Spring s : env.getSprings()) s.draw(cam);
 
@@ -17,10 +17,19 @@ class Display {
             b.draw(cam);
         }
 
+        forceOverlay.elements.clear();
+        velocityOverlay.elements.clear();
+        quantityOverlay.elements.clear();
         for (Body b : env.getBodies()) {
+            if (b.fixed == true) continue; // skip fixed bodies
+            velocityOverlay.elements.add(b.toVelocityArrow());
+            quantityOverlay.elements.add(b);
             for (Force f : b.lastForces) {
-            f.scaled(FORCE_SCALE).draw(cam);
+                forceOverlay.elements.add(f.scaled(FORCE_SCALE).toArrow());
             }
+        }
+        for (Spring s : env.getSprings()) {
+            quantityOverlay.elements.add(s);
         }
         
         cam.leave();

@@ -1,13 +1,24 @@
 import org.scilab.forge.jlatexmath.*;
 import java.util.HashMap;
 
+static HashMap<String, TeXIcon> cache = new HashMap<String, TeXIcon>();
+
+static TeXIcon latexIcon(String tex, float size) {
+  String key = size + "|" + tex;
+  TeXIcon icon = cache.get(key);
+  if (icon == null) {
+    icon = new TeXFormula(tex).createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
+    icon.setForeground(java.awt.Color.BLACK);
+    cache.put(key, icon);
+  }
+  return icon;
+}
+
 class Camera {
   static final float SCALE = 50;
   
   float x, y;
   float zoom;
-
-  HashMap<String, TeXIcon> cache = new HashMap<String, TeXIcon>();
 
   void drawLabel(String text, PVector attachment) {
     latex(text, attachment.x, attachment.y);
@@ -15,6 +26,14 @@ class Camera {
 
   void latex(String tex, float x, float y) {
     latex(tex, x, y, 16);
+  }
+
+  void latex(TeXIcon icon, float x, float y) {
+    pushMatrix();
+    translate(x, y);
+    scale(1 / zoom, -1 / zoom);  // zurück auf Pixel und y-Spiegelung aufheben
+    latexScreen(icon, 0, 0);
+    popMatrix();
   }
 
   // Zeichnet eine Formel an einer Position in Welt-Koordinaten
@@ -31,14 +50,11 @@ class Camera {
   // (außerhalb von cam.enter()/cam.leave(), z. B. für UI wie Buttons).
   // Die Formel wird links-unten an (x, y) ausgerichtet.
   void latexScreen(String tex, float x, float y, float size) {
-    String key = size + "|" + tex;
-    TeXIcon icon = cache.get(key);
-    if (icon == null) {  // Formel nur einmal setzen, nicht in jedem Frame
-      icon = new TeXFormula(tex).createTeXIcon(TeXConstants.STYLE_DISPLAY, size);
-      icon.setForeground(java.awt.Color.BLACK);
-      cache.put(key, icon);
-    }
+    TeXIcon icon = latexIcon(tex, size);
+    latexScreen(icon, x, y);
+  }
 
+  void latexScreen(TeXIcon icon, float x, float y) {
     int h = icon.getIconHeight();
 
     java.awt.Graphics2D g2 = ((processing.awt.PGraphicsJava2D) g).g2;
@@ -95,21 +111,5 @@ class Camera {
     pan(-dx / zoom, dy / zoom);
   }
 
-  void drawArrow(PVector origin, PVector vector, int stroke_color) {
-      float len = vector.mag();
-      if (len < 1e-6) return;
-
-      PVector to = PVector.add(origin, vector);
-      PVector dir = PVector.div(vector, len);
-      PVector perp = new PVector(-dir.y, dir.x);
-
-      float head = min(0.2, len * 0.2);
-      PVector base = PVector.sub(to, PVector.mult(dir, head));
-
-      stroke(stroke_color);
-      this.strokeWeight(1.5);
-      line(origin.x, origin.y, to.x, to.y);
-      line(to.x, to.y, base.x + perp.x * head * 0.5, base.y + perp.y * head * 0.5);
-      line(to.x, to.y, base.x - perp.x * head * 0.5, base.y - perp.y * head * 0.5);
-  }
+  PGraphics graphics() { return g; }
 }

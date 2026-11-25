@@ -1,4 +1,34 @@
-class Force implements Labeled {
+class ForceArrow implements UIArrow {
+    int stroke;
+    PVector vector;
+    PVector origin;
+    String label;
+
+    int strokeColor() {
+        return stroke;
+    }
+
+    PVector vector() {
+        return vector;
+    }
+
+    PVector origin() {
+        return origin;
+    }
+
+    TeXIcon label(Camera camera) {
+        return latexIcon(label, LABEL_SIZE);
+    }
+
+    ForceArrow(int stroke, PVector vector, PVector origin, String label) {
+        this.stroke = stroke;
+        this.vector = vector;
+        this.origin = origin;
+        this.label = label;
+    }
+}
+
+class Force {
     PVector origin;
     PVector vector;
     String label;
@@ -11,6 +41,10 @@ class Force implements Labeled {
         this.stroke = stroke;
     }
 
+    ForceArrow toArrow() {
+        return new ForceArrow(this.stroke, this.vector, this.origin, this.label);
+    }
+
     Force scaled(float scalar) {
         PVector updated = PVector.mult(this.vector, scalar);
         return new Force(origin, updated, label, stroke);
@@ -18,22 +52,5 @@ class Force implements Labeled {
 
     PVector getVector() {
         return vector;
-    }
-
-    public void draw(Camera cam) {
-        if (!btnForceArrows.state()) return;
-
-        cam.drawArrow(origin, vector, this.stroke);
-        cam.drawLabel(label, this.getAttachmentPoint());
-    }
-
-    public PVector getAttachmentPoint() {
-        PVector to = PVector.add(origin, vector);
-        PVector mid = PVector.lerp(origin, to, 0.5);
-        PVector perp = PVector.sub(to, origin);
-        perp.normalize();
-        perp = new PVector(-perp.y, perp.x);
-        mid = PVector.add(mid, PVector.mult(perp, 0.35));
-        return mid;
     }
 }

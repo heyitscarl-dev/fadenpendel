@@ -37,6 +37,17 @@ class Spring implements UIOffsetLabel {
         this.length = length();
     }
 
+    // Kopie, die zwischen den Körpern `a` und `b` (aus dem kopierten
+    // Environment) hängt. Steifigkeit, Dämpfung und Ruhelänge werden
+    // übernommen statt neu berechnet, weil der Konstruktor die Ruhelänge
+    // aus den *aktuellen* Positionen bestimmt.
+    Spring copy(Body a, Body b) {
+        Spring copy = new Spring(stiffness, a, b);
+        copy.damping = damping;
+        copy.length = length;
+        return copy;
+    }
+
     /// Return a -> b as [0]
     ///    and b -> a as [1]
     Force[] forces(String[] labels) {

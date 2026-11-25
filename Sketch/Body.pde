@@ -49,6 +49,16 @@ class Body implements UILabel {
     this.fixed = fixed;
   }
   
+  // Tiefe Kopie: Position und Geschwindigkeit werden als neue PVectors
+  // angelegt, damit Original und Kopie sich nicht gegenseitig verändern.
+  // Kräfte starten leer, sie werden in jedem Tick neu berechnet.
+  Body copy() {
+    Body copy = new Body(identifier, mass, radius, fixed);
+    copy.position = position.copy();
+    copy.velocity = velocity.copy();
+    return copy;
+  }
+
   void setPosition(PVector updated) {
     this.position = updated;
   }

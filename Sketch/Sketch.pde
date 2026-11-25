@@ -2,6 +2,7 @@ final float STEP = 1.0 / (2 * 240.0);
 final float FORCE_SCALE = 0.075 / 2.0;
 float accumulator = 0.0;
 
+Environment initial = new Environment();
 Environment env = new Environment();
 Camera cam = new Camera();
 Display display = new Display();
@@ -18,7 +19,7 @@ UIOverlay quantityOverlay = new UIOverlay();
 
 float last;
 
-boolean running = true;
+boolean running = false;
 boolean doStep = false;
 static boolean luft = true;
 
@@ -67,6 +68,8 @@ void setup() {
   Spring spring3 = new Spring(stiffness, body2, body3);
   env.addSpring(spring3);
   
+  initial = env.copy();
+
   // Um dt (Δd; delta time), also die Zeitdifferenz der letzten Frames
   // zu berrechnen (wodurch die Simulation konstant und unabhängig von 
   // der Bildrate/FPS sein kann), muss der Zeitpunkt des letzten Frames 
@@ -124,6 +127,11 @@ void mouseWheel(MouseEvent e) {
 void keyPressed() {
   if (key == ' ') {
     running = !running;
+  }
+
+  if (key == 'r') {
+    env = initial.copy();
+    running = false;
   }
 
   if (!running && keyCode == ENTER) {

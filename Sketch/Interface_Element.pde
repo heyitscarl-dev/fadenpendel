@@ -98,7 +98,7 @@ class Toggle implements UIElement {
     final int TRACK_OFF = color(255);  // "white"
     final int TRACK_ON  = color(230);  // "black!10"
 
-    boolean state = true;
+    boolean state;
 
     // Position des Knopfs: 0 = ganz links (aus), 1 = ganz rechts (an).
     // Läuft jedes Frame ein Stück auf den Zielwert zu, dadurch gleitet er.
@@ -109,7 +109,8 @@ class Toggle implements UIElement {
 
     TeXIcon label;
 
-    Toggle(String label) {
+    Toggle(boolean state, String label) {
+        this.state = state;
         this.label = latexIcon(label, LABEL_SIZE);
     }
 

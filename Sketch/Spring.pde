@@ -1,8 +1,11 @@
+final float THREAD_STIFFNESS = 4 * 7500.0;
+
 class Spring implements UIOffsetLabel {
     public static final int PEAKS_PER_DISTANCE = 2;
 
     float stiffness;
     float length;
+    float damping;
 
     Body a, b;
 
@@ -15,9 +18,22 @@ class Spring implements UIOffsetLabel {
     PVector vector() { return PVector.sub(b.position, a.position); }
 
     Spring(float stiffness, Body a, Body b) {
+        float zeta;
+        if (stiffness > THREAD_STIFFNESS) zeta = 1.0;
+        else zeta = 0.0;
+
+        // c = 2*\zeta \sqrt{k*\mu}
+        float mu;
+        if (a.fixed) mu = b.mass;
+        else if (b.fixed) mu = a.mass;
+        else mu = (a.mass * b.mass) / (a.mass + b.mass);
+
+        float damping = 2 * zeta * sqrt(stiffness * mu);
         this.stiffness = stiffness;
+        this.damping = damping;
         this.a = a;
         this.b = b;
+
         this.length = length();
     }
 
@@ -30,9 +46,14 @@ class Spring implements UIOffsetLabel {
         float distance = PVector.dist(a, b);
         float error = distance - length;
 
-        float f = error * -(stiffness);
         PVector normal = PVector.sub(b, a);
         normal.normalize();
+
+        PVector vRel = PVector.sub(this.b.velocity, this.a.velocity);
+        float vAlong = vRel.dot(normal);
+
+        float f = error * -(stiffness) - damping * vAlong;
+
         PVector force = PVector.mult(normal, f);
 
         String mag = "" + round(force.mag() * 10) / 10.0;

@@ -1,5 +1,5 @@
-final float STEP = 1.0 / 240.0;
-final float FORCE_SCALE = 0.075;
+final float STEP = 1.0 / (2 * 240.0);
+final float FORCE_SCALE = 0.075 / 2.0;
 float accumulator = 0.0;
 
 Environment env = new Environment();
@@ -8,9 +8,9 @@ Display display = new Display();
 
 UIOverlay defaultOverlay = new UIOverlay();
 UIContainer controls = new UIContainer(new PVector(50, 50));
-Toggle btnDrawVelocities = new Toggle("\\text{Velocities}");
-Toggle btnDrawForces = new Toggle("\\text{Forces}");
-Toggle btnDrawQuantities = new Toggle("\\text{Quantities}");
+Toggle btnDrawVelocities = new Toggle(false, "\\text{Velocities}");
+Toggle btnDrawForces = new Toggle(false, "\\text{Forces}");
+Toggle btnDrawQuantities = new Toggle(true, "\\text{Quantities}");
 
 UIOverlay velocityOverlay = new UIOverlay();
 UIOverlay forceOverlay = new UIOverlay();
@@ -41,9 +41,17 @@ void setup() {
 
   // Der Schwingkörper. Er ist auch an dem "Faden" befestigt
   // und teil des Pendels. `fixed == false`
-  Body dragged = new Body("m_1", 5.0, 0.25, false);
-  dragged.setPosition(new PVector(-2.5, 2.5));
-  env.addBody(dragged);
+  Body body1 = new Body("m_1", 5.0, 0.25, false);
+  body1.setPosition(new PVector(-2.5, 2.5));
+  env.addBody(body1);
+
+  Body body2 = new Body("m_2", 5.0, 0.25, false);
+  body2.setPosition(new PVector(-5, 2.5));
+  env.addBody(body2);
+
+  Body body3 = new Body("m_3", 5.0, 0.25, false);
+  body3.setPosition(new PVector(-7.5, 2.5));
+  env.addBody(body3);
 
   /* Einen Fanden zu simulieren hat sich als relativ schwierig
    * herausgestellt. Daher wird ein Faden hier als Feder, mit enorm
@@ -51,9 +59,13 @@ void setup() {
    * auch interessante ergebnisse.
   */
   
-  float stiffness = 500.0;
-  Spring spring = new Spring(stiffness, body, dragged);
-  env.addSpring(spring);
+  float stiffness = THREAD_STIFFNESS;
+  Spring spring1 = new Spring(stiffness, body, body1);
+  env.addSpring(spring1);
+  Spring spring2 = new Spring(20.0, body1, body2);
+  env.addSpring(spring2);
+  Spring spring3 = new Spring(stiffness, body2, body3);
+  env.addSpring(spring3);
   
   // Um dt (Δd; delta time), also die Zeitdifferenz der letzten Frames
   // zu berrechnen (wodurch die Simulation konstant und unabhängig von 

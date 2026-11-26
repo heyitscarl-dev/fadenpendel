@@ -22,6 +22,9 @@ void tick(float dt) {
             if (b1 == b2) continue;
             if (b1.fixed && b2.fixed) continue;
 
+            float invMass1 = (b1.fixed) ? 0 : 1 / b1.mass;
+            float invMass2 = (b2.fixed) ? 0 : 1 / b2.mass;
+
             // Einfacher Ansatz, der einch alle möglichen Parre überprüft (ohne broad und narrow stage)
 
             PVector delta = PVector.sub(b2.position, b1.position);
@@ -39,13 +42,16 @@ void tick(float dt) {
             }
 
             float e = 1.0;
-            float j = -(1 + e) * vRel / (1/b1.mass + 1/b2.mass);
+            float j = -(1 + e) * vRel / (invMass1 + invMass2);
             
-            b1.velocity = PVector.sub(b1.velocity, PVector.mult(normal, j / b1.mass));
-            b2.velocity = PVector.add(b2.velocity, PVector.mult(normal, j / b2.mass));
+            b1.velocity = PVector.sub(b1.velocity, PVector.mult(normal, j * invMass1));
+            b2.velocity = PVector.add(b2.velocity, PVector.mult(normal, j * invMass2));
 
-            b1.position = PVector.sub(b1.position, PVector.mult(normal, error));
-            b2.position = PVector.add(b2.position, PVector.mult(normal, error));
+            float w1 = invMass1 / (invMass1 + invMass2);
+            float w2 = invMass2 / (invMass1 + invMass2);
+
+            b1.position = PVector.sub(b1.position, PVector.mult(normal, error * w1));
+            b2.position = PVector.add(b2.position, PVector.mult(normal, error * w2));
         }
     }
 

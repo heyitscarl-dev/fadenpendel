@@ -1,4 +1,4 @@
-final float THREAD_STIFFNESS = pow(10, 5);
+final float THREAD_STIFFNESS = 1e5;
 
 class Spring implements UIOffsetLabel {
     public static final int PEAKS_PER_DISTANCE = 2;

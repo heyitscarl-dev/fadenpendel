@@ -4,7 +4,7 @@ float accumulator = 0.0;
 float speed = 1.0;
 
 Environment initial = new Environment();
-Environment env = new Environment();
+Environment env = new NewtonPendulum();
 Camera cam = new Camera();
 Display display = new Display();
 
@@ -33,30 +33,6 @@ void setup() {
 
   size(1280, 800);
   pixelDensity(2);
-
-  for (int i = 0; i < 5; i++) {
-    Body nAnchor = new Body("a_" + i, 1.0, 0.25, true);
-    nAnchor.setPosition(new PVector(0.5 * i, 2.5));
-    env.addBody(nAnchor);
-
-    Body nBody = new Body("m_" + i, 1.0, 0.25, false);
-    nBody.setPosition(new PVector(0.5 * i, 0));
-    env.addBody(nBody);
-
-    Spring nSpring = new Spring(THREAD_STIFFNESS, nAnchor, nBody);
-    env.addSpring(nSpring);
-  }
-
-  Body anchor = new Body("a_5", 1.0, 0.25, true);
-  anchor.setPosition(new PVector(0.5 * 5, 2.5));
-  env.addBody(anchor);
-
-  Body body = new Body("m_5", 1.0 * 2 * 2, 2 * 0.25, false);
-  body.setPosition(new PVector(0.5 * 5 + 2.5, 2.5));
-  env.addBody(body);
-
-  Spring spring = new Spring(THREAD_STIFFNESS, anchor, body);
-  env.addSpring(spring);
   
   initial = env.copy();
 

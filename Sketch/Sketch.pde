@@ -1,5 +1,5 @@
 final float STEP = 1.0 / (1000.0);
-final float FORCE_SCALE = 0.075 / 2.0;
+final float FORCE_SCALE = 0.075;
 float accumulator = 0.0;
 float speed = 1.0;
 
@@ -10,26 +10,37 @@ Display display = new Display();
 
 UIOverlay defaultOverlay = new UIOverlay();
 UIContainer controls = new UIContainer(new PVector(50, 50));
+UIContainer values = new UIContainer(new PVector(50, 50));
 Toggle btnDrawVelocities = new Toggle(false, "\\text{Velocities}");
 Toggle btnDrawForces = new Toggle(false, "\\text{Forces}");
 Toggle btnDrawQuantities = new Toggle(true, "\\text{Quantities}");
+Toggle btnDrawContacts = new Toggle(true, "\\text{Contacts}");
+Toggle btnAirResistance = new Toggle(true, "\\text{Drag}");
 
 UIOverlay velocityOverlay = new UIOverlay();
 UIOverlay forceOverlay = new UIOverlay();
 UIOverlay quantityOverlay = new UIOverlay();
+UIOverlay contactOverlay = new UIOverlay();
+
+float simTime = 0.0;                  // vergangene Simulationszeit (s)
+final float CONTACT_LIFETIME = 0.3;   // Sichtbarkeit eines Kontakts nach der letzten Berührung (s)
 
 float last;
 
 boolean running = false;
 boolean doStep = false;
-static boolean luft = false;
 
 void setup() {
   // Initialisiert die UI
   controls.elements.add(btnDrawVelocities);
   controls.elements.add(btnDrawForces);
   controls.elements.add(btnDrawQuantities);
+  controls.elements.add(btnDrawContacts);
   defaultOverlay.elements.add(controls);
+  
+  values.position.x += 50 + controls.dimensions(cam).x;
+  values.elements.add(btnAirResistance);
+  defaultOverlay.elements.add(values);
 
   size(1280, 800);
   pixelDensity(2);
@@ -72,6 +83,9 @@ void draw() {
   if (btnDrawQuantities.state) {
     quantityOverlay.drawToScreen(cam);
   }
+  if (btnDrawContacts.state) {
+    contactOverlay.drawToScreen(cam);
+  }
   cam.leave();
 
   defaultOverlay.drawToScreen(cam);
@@ -98,6 +112,8 @@ void keyPressed() {
   if (key == 'r') {
     env = initial.copy();
     running = false;
+    contactOverlay.elements.clear();
+    simTime = 0;
   }
 
   // Szenario wechseln (siehe Sketch/Scenarios.pde)
@@ -107,6 +123,8 @@ void keyPressed() {
       env = scenario;
       initial = env.copy();
       running = false;
+      contactOverlay.elements.clear();
+      simTime = 0;
     }
   }
 

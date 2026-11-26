@@ -162,3 +162,9 @@ class Toggle implements UIElement {
         return new PVector(WIDTH + label.getIconWidth() + LABEL_INNER_MARGIN, HEIGHT);
     }
 }
+
+class Pill implements UIElement {
+    PVector dimensions(Camera camera) { return null; }
+    void handleClick(Camera camera, PVector position) {}
+    void drawToScreen(Camera camera, PVector position) {}
+}

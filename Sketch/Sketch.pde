@@ -51,7 +51,7 @@ void setup() {
   anchor.setPosition(new PVector(0.5 * 5, 2.5));
   env.addBody(anchor);
 
-  Body body = new Body("m_5", 1.0, 0.25, false);
+  Body body = new Body("m_5", 1.0 * 2 * 2, 2 * 0.25, false);
   body.setPosition(new PVector(0.5 * 5 + 2.5, 2.5));
   env.addBody(body);
 

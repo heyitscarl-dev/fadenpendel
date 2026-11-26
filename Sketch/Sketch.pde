@@ -100,6 +100,16 @@ void keyPressed() {
     running = false;
   }
 
+  // Szenario wechseln (siehe Sketch/Scenarios.pde)
+  if (key >= '1' && key <= '9') {
+    Environment scenario = createScenario(key - '0');
+    if (scenario != null) {
+      env = scenario;
+      initial = env.copy();
+      running = false;
+    }
+  }
+
   if (!running && keyCode == ENTER) {
     doStep = true;
   }

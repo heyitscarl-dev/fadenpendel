@@ -39,5 +39,6 @@ class Display {
         textAlign(LEFT, BASELINE);
         text("[Space] to pause", 30, height - 30);
         text("[Enter] to step", 30, height - 45);
+        text("[1-8] scenario", 30, height - 60);
     }
 }

@@ -40,5 +40,20 @@ class Display {
         text("[Space] to pause", 30, height - 30);
         text("[Enter] to step", 30, height - 45);
         text("[1-8] scenario", 30, height - 60);
+
+        textAlign(LEFT, BASELINE);
+        ArrayList<Body> bodies = env.getBodies();
+        int k = 1;
+        for (int i = 0; i < bodies.size(); i++) {
+            Body b1 = bodies.get(i);
+        
+            if (b1.fixed == false){
+                text("Ekin Body " + k + "= " + round(b1.ekin * 100.0)/100.0 + "J", width - 120, height - (15 + i*15));
+                text("Epot Body " + k + "= " + round(b1.epot * 100.0)/100.0 + "J", width - 240, height - (15 + i*15));
+                text("Espan Body " + k + "= " + round(b1.espann * 100.0)/100.0 + "J", width - 360, height - (15 + i*15));
+                
+                k++;
+            }
+        }
     }
 }

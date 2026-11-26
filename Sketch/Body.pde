@@ -18,6 +18,10 @@ class Body implements UILabel {
   String identifier;
   float mass;
   float radius;
+  float ekin;
+  float yruhe;
+  float epot;
+  float espann;
   PVector position;
   PVector velocity;
   ArrayList<Force> forces;

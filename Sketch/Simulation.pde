@@ -12,6 +12,8 @@ void tick(float dt) {
 
         spring.b.applyForce(forces[0]);
         spring.a.applyForce(forces[1]);
+
+        
     }
 
     // !!! ERSTE IMPLEMENTIERUNG VON KOLLISION ÜBER IMPULSE
@@ -89,6 +91,8 @@ void tick(float dt) {
                 "|F_L|=" + round(drag.mag()*10)/10.0 + "\\,\\mathrm{N}",
             color(0, 0, 255)
             )); // Luftwiderstand
+
+
         }
         
 
@@ -109,13 +113,34 @@ void tick(float dt) {
         
         // Geschwindigkeits aenderung
         PVector dv = a.mult(dt);
-
+ 
         //Geschwindigkeits aenderung auf Geschwindigkeit addieren
         body.velocity = body.velocity.add(dv);
         
         // Zurueckgelegte Strecke
         PVector dp = PVector.mult(body.velocity, dt);
         
+        // Energie
+        body.ekin = 0.5 * body.mass * sq(body.velocity.mag());
+
+        for (Spring spring : env.getSprings()) {
+            if (spring.b == body && spring.a.fixed) {
+
+            // Y-Wert der Ruhelage
+            body.yruhe = spring.a.position.y + spring.length + (body.mass * env.gravity / spring.stiffness);
+
+            // Spannenergie
+            float deltaL = spring.length() - spring.length;
+            body.espann = 0.5 * spring.stiffness * sq(deltaL);
+
+            // Potenzielle Energie
+            body.epot = body.mass * env.gravity * (body.yruhe - body.position.y);
+
+            break;
+            }
+        }
+    
+
         // Neue Position
         body.position = body.position.add(dp);
     }

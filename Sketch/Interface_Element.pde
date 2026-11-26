@@ -163,6 +163,39 @@ class Toggle implements UIElement {
     }
 }
 
+// Berührungspunkt zweier Körper. Pro Körperpaar gibt es höchstens einen
+// Contact; solange die Körper sich berühren, wird er aufgefrischt.
+class Contact implements UIElement {
+    Body a, b;
+    PVector position;
+    float since; // Simulationszeit der letzten Berührung (s)
+
+    Contact(Body a, Body b, PVector position) {
+        this.a = a;
+        this.b = b;
+        refresh(position);
+    }
+
+    void refresh(PVector position) {
+        this.position = position;
+        this.since = simTime;
+    }
+
+    boolean involves(Body a, Body b) {
+        return (this.a == a && this.b == b) || (this.a == b && this.b == a);
+    }
+
+    PVector dimensions(Camera camera) { return null; }
+    void handleClick(Camera camera, PVector position) {}
+    void drawToScreen(Camera camera, PVector _position) {
+        push(); // Stil nicht an nachfolgende Zeichnungen weitergeben
+        noStroke();
+        fill(color(200, 0, 200));
+        circle(position.x, position.y, 0.125);
+        pop();
+    }
+}
+
 class Pill implements UIElement {
     PVector dimensions(Camera camera) { return null; }
     void handleClick(Camera camera, PVector position) {}

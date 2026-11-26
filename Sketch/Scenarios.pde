@@ -91,7 +91,7 @@ class CoupledPendulums extends Scenario {
     Body m2 = mass("m_2", 1.0, 0.25, hanging(a2, 4, 0));
     thread(a1, m1);
     thread(a2, m2);
-    spring(8, m1, m2); // Ruhelänge = Abstand in der Ruhelage
+    spring(1, m1, m2); // Ruhelänge = Abstand in der Ruhelage
 
     // Erst jetzt auslenken, damit die Kopplungsfeder ihre Ruhelänge
     // aus der Ruhelage bekommt. Die Fadenlänge bleibt dabei gleich.
@@ -105,7 +105,7 @@ class SpringOscillator extends Scenario {
   SpringOscillator() {
     Body a = anchor(0, 4);
     Body m = mass("m", 1.0, 0.25, hanging(a, 2, 0));
-    spring(40, a, m);
+    spring(2, a, m);
   }
 }
 

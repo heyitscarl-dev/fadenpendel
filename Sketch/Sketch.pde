@@ -1,9 +1,10 @@
-final float STEP = 1.0 / (2 * 240.0);
+final float STEP = 1.0 / (1000.0);
 final float FORCE_SCALE = 0.075 / 2.0;
 float accumulator = 0.0;
+float speed = 1.0;
 
 Environment initial = new Environment();
-Environment env = new Environment();
+Environment env = new NewtonPendulum();
 Camera cam = new Camera();
 Display display = new Display();
 
@@ -32,39 +33,6 @@ void setup() {
 
   size(1280, 800);
   pixelDensity(2);
-
-  // Der "Anker". An ihm ist der "Faden" und somit das
-  // Pendel befestigt. `fixed == true`, daher bewegt sich
-  // dieser Körper nicht.
-  Body anchor1 = new Body("m_{f1}", 1.0, 0.25, true);
-  anchor1.setPosition(new PVector(-0.25, 2.5));
-  env.addBody(anchor1);
-
-  Body anchor2 = new Body("m_{f2}", 1.0, 0.25, true);
-  anchor2.setPosition(new PVector(0.25, 2.5));
-  env.addBody(anchor2);
-
-  // Der Schwingkörper. Er ist auch an dem "Faden" befestigt
-  // und teil des Pendels. `fixed == false`
-  Body body1 = new Body("m_1", 5.0, 0.25, false);
-  body1.setPosition(new PVector(-2.5-0.25, 2.5));
-  env.addBody(body1);
-
-  Body body2 = new Body("m_2", 5.0, 0.25, false);
-  body2.setPosition(new PVector(2.5+0.25, 2.5));
-  env.addBody(body2);
-
-  /* Einen Fanden zu simulieren hat sich als relativ schwierig
-   * herausgestellt. Daher wird ein Faden hier als Feder, mit enorm
-   * hoher Federkonstante simuliert. Nierdrige Federkonstanten ergeben
-   * auch interessante ergebnisse.
-  */
-  
-  float stiffness = THREAD_STIFFNESS;
-  Spring spring1 = new Spring(stiffness, anchor1, body1);
-  env.addSpring(spring1);
-  Spring spring2 = new Spring(stiffness, anchor2, body2);
-  env.addSpring(spring2);
   
   initial = env.copy();
 
@@ -87,10 +55,10 @@ void draw() {
   
   // 240 Steps pro Sekunde. Pro Frame werden alle Steps "aufgeholt", die während Δd hätten
   // passieren müssen.
-  accumulator += dt;
+  accumulator += speed * dt;
   while (accumulator >= STEP) {
-    tick(STEP); // (siehe Sketch/Simulation.pde)
-    accumulator -= STEP;
+    tick(STEP / speed); // (siehe Sketch/Simulation.pde)
+    accumulator -= STEP / speed;
   }
   
   display.draw(cam);
@@ -130,6 +98,16 @@ void keyPressed() {
   if (key == 'r') {
     env = initial.copy();
     running = false;
+  }
+
+  // Szenario wechseln (siehe Sketch/Scenarios.pde)
+  if (key >= '1' && key <= '9') {
+    Environment scenario = createScenario(key - '0');
+    if (scenario != null) {
+      env = scenario;
+      initial = env.copy();
+      running = false;
+    }
   }
 
   if (!running && keyCode == ENTER) {

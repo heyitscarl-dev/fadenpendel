@@ -53,3 +53,33 @@ class Environment {
     return copy;
   }
 }
+
+class NewtonPendulum extends Environment {
+  NewtonPendulum() {
+    super();
+    for (int i = 0; i < 5; i++) {
+      Body nAnchor = new Body("a_" + i, 1.0, 0.25, true);
+      nAnchor.setPosition(new PVector(0.5 * i, 2.5));
+      addBody(nAnchor);
+
+      Body nBody = new Body("m_" + i, 1.0, 0.25, false);
+      nBody.setPosition(new PVector(0.5 * i, 0));
+      addBody(nBody);
+
+      Spring nSpring = new Spring(THREAD_STIFFNESS, nAnchor, nBody);
+      addSpring(nSpring);
+    }
+
+    Body anchor = new Body("a_5", 1.0, 0.25, true);
+    anchor.setPosition(new PVector(0.5 * 5, 2.5));
+    addBody(anchor);
+
+    Body body = new Body("m_5", 1.0, 0.25, false);
+    body.setPosition(new PVector(0.5 * 5 + 2.5, 2.5));
+    addBody(body);
+
+    System.out.println(THREAD_STIFFNESS);
+    Spring spring = new Spring(THREAD_STIFFNESS, anchor, body);
+    addSpring(spring);
+  }
+}

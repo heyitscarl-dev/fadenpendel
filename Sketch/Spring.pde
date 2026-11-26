@@ -1,4 +1,4 @@
-final float THREAD_STIFFNESS = 4 * 7500.0;
+final float THREAD_STIFFNESS = 1e5;
 
 class Spring implements UIOffsetLabel {
     public static final int PEAKS_PER_DISTANCE = 2;
@@ -19,7 +19,7 @@ class Spring implements UIOffsetLabel {
 
     Spring(float stiffness, Body a, Body b) {
         float zeta;
-        if (stiffness > THREAD_STIFFNESS) zeta = 1.0;
+        if (stiffness >= THREAD_STIFFNESS) zeta = 1.0;
         else zeta = 0.0;
 
         // c = 2*\zeta \sqrt{k*\mu}

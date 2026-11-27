@@ -25,7 +25,7 @@ UIOverlay forceOverlay = new UIOverlay();
 UIOverlay quantityOverlay = new UIOverlay();
 UIOverlay contactOverlay = new UIOverlay();
 
-Body selected = null;
+Selectable selected = null;
 
 float simTime = 0.0;                  // vergangene Simulationszeit (s)
 final float CONTACT_LIFETIME = 0.3;   // Sichtbarkeit eines Kontakts nach der letzten Berührung (s)
@@ -114,10 +114,35 @@ Body getBodyAt(PVector world) {
   return null;
 }
 
+Spring getSpringAt(PVector world) {
+  for (Spring s : env.springs) {
+    PVector a = s.a.position;
+    PVector b = s.b.position;
+
+    PVector directionSpring = PVector.sub(b, a);
+    directionSpring.normalize();
+
+    PVector directionMouse = PVector.sub(world, a);
+    float t = PVector.dot(directionSpring, directionMouse);
+    
+    PVector point = PVector.add(a, PVector.mult(directionSpring, t));
+    float dist = PVector.dist(point, world);
+
+    float gap = 0.4;
+    if (dist < gap && t > -gap && t < s.length() + gap) {
+      return s;
+    }
+  }
+  return null;
+}
+
 void mousePressed() {
-  PVector mouse = new PVector(mouseX, mouseY);
-  if (defaultOverlay.handleClick(cam, mouse)) return;
-  selected = getBodyAt(cam.screenToWorld(mouse));
+  PVector mouseScreen = new PVector(mouseX, mouseY);
+  if (defaultOverlay.handleClick(cam, mouseScreen)) return;
+  PVector mouseWorld = cam.screenToWorld(mouseScreen);
+  selected = getBodyAt(mouseWorld);
+  if (selected != null) return;
+  selected = getSpringAt(mouseWorld);
 }
 
 void mouseDragged() {

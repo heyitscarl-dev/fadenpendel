@@ -14,7 +14,7 @@ class VelocityArrow implements UIArrow {
   }
 }
 
-class Body implements UILabel {
+class Body implements UILabel, Selectable {
   String identifier;
   float mass;
   float radius;
@@ -59,8 +59,7 @@ class Body implements UILabel {
     return copy;
   }
 
-  void drawSelection(Camera camera) {
-    float gap = 4 / camera.zoom;          // 4 px gap at every zoom level
+  void drawBounding(Camera camera, float gap) {
     fill(color(THEME_SELECTION, 100));
     stroke(color(THEME_SELECTION));
     camera.strokeWeight(1.5);

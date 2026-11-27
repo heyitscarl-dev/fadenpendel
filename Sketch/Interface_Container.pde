@@ -57,3 +57,24 @@ class UIContainer implements UIElement {
         }
     }
 }
+
+class Inspector extends UIContainer {
+    Inspector(Selectable selectable) {
+        super(new PVector(0, 0), true);
+        if (selectable instanceof Body) {
+            Body body = (Body) selectable;
+            this.position = cam.worldToScreen(body.position);
+            this.elements.add(new Pill("m=", "" + body.mass, "\\,\\mathrm{kg}"));
+            this.elements.add(new Pill("r=", "" + body.radius, "\\,\\mathrm m"));
+        }
+        if (selectable instanceof Spring) {
+            Spring spring = (Spring) selectable;
+            this.position = cam.worldToScreen(spring.midpoint());
+            this.elements.add(new Pill("k=", "" + spring.stiffness, "\\,\\frac{\\mathrm N}{\\mathrm m}"));
+        }
+    }
+
+    void tick() {
+        
+    }
+}

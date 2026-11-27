@@ -39,6 +39,8 @@ boolean doStep = false;
 
 UIContainer ctnMenu = null;
 
+UIElement focused = null;  // Element, das gerade Tastatureingaben bekommt (z. B. eine Pill)
+
 void setup() {
   // Initialisiert die UI
   controls.elements.add(btnDrawVelocities);
@@ -108,14 +110,7 @@ void draw() {
   }
   if (selected != null && (ctnMenu == null || pselected != selected)) {
     defaultOverlay.elements.remove(ctnMenu);
-    PVector position = null;
-    if (selected instanceof Body) position = ((Body) selected).position;
-    if (selected instanceof Spring) position = ((Spring) selected).midpoint();
-    position = cam.worldToScreen(position);
-
-    ctnMenu = new UIContainer(position);
-    ctnMenu.elements.add(new Toggle(false, "\\text{Text}"));
-    ctnMenu.elements.add(new Toggle(false, "\\text{Text}"));
+    ctnMenu = new Inspector(selected);
     defaultOverlay.elements.add(ctnMenu);
   } else if (selected == null && ctnMenu != null) {
     defaultOverlay.elements.remove(ctnMenu);
@@ -163,6 +158,7 @@ Spring getSpringAt(PVector world) {
 
 void mousePressed() {
   PVector mouseScreen = new PVector(mouseX, mouseY);
+  focused = null;  // Klick daneben nimmt den Fokus weg; eine Pill holt ihn sich in handleClick zurück
   if (defaultOverlay.handleClick(cam, mouseScreen)) return;
   PVector mouseWorld = cam.screenToWorld(mouseScreen);
   selected = getBodyAt(mouseWorld);
@@ -187,6 +183,12 @@ void mouseWheel(MouseEvent e) {
 }
 
 void keyPressed() {
+  // Hat ein Textfeld den Fokus, bekommt es alle Tasten, damit z. B. "1" nicht das Szenario wechselt.
+  if (focused != null && focused.handleKey(key, keyCode)) {
+    key = 0;  // sonst beendet Escape den Sketch
+    return;
+  }
+
   if (key == ' ' && !btnEditor.state) {
     running = !running;
   }

@@ -19,6 +19,7 @@ Toggle btnAirResistance = new Toggle(true, "\\text{Drag}");
 
 UIContainer ctnEditor = new UIContainer(new PVector(1280 - 117.0 - 50.0, 50));
 Toggle btnEditor = new Toggle(false, "\\text{Edit}");
+boolean lastEditorState = btnEditor.state;
 
 UIOverlay velocityOverlay = new UIOverlay();
 UIOverlay forceOverlay = new UIOverlay();
@@ -97,6 +98,10 @@ void draw() {
   }
   if (btnDrawContacts.state) {
     contactOverlay.drawToScreen(cam);
+  }
+  if (lastEditorState != btnEditor.state) {
+    initial = env.copy();
+    lastEditorState = btnEditor.state;
   }
 
   cam.leave();

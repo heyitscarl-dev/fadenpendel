@@ -76,6 +76,10 @@ class Camera {
     return new PVector((screen.x - width / 2) / zoom + x, -(screen.y - height / 2) / zoom + y);
   }
 
+  PVector worldToScreen(PVector world) {
+    return new PVector(((world.x - x) * zoom) + width / 2, (-(world.y - y) * zoom) + height / 2);
+  }
+
   float screenToWorld(float length) {
     return length / zoom;
   }

@@ -140,6 +140,10 @@ class Spring implements UIOffsetLabel, Selectable {
         return length;
     }
 
+    PVector midpoint() {
+        return PVector.lerp(this.a.position, this.b.position, 0.5);
+    }
+
     void drawBounding(Camera camera, float gap) {
         float rad = PVector.sub(b.position, a.position).heading();
         float width =  (this.stiffness >= THREAD_STIFFNESS) ? 0.5 : (2 * SPRING_AMPLITUDE);

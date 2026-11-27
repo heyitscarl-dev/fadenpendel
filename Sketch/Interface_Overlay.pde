@@ -8,6 +8,7 @@ class UIOverlay {
         if (elements.isEmpty()) return;
 
         elements.forEach(e -> {
+            if (e == null) return;
             if (!e.visible()) return;
             e.drawToScreen(camera, null);
         });
@@ -16,6 +17,7 @@ class UIOverlay {
     public boolean handleClick(Camera camera, PVector position) {
         boolean handled = false;
         for (UIElement e : elements) {
+            if (e == null) continue;
             if (e.handleClick(camera, position)) handled = true;
         }
         return handled;

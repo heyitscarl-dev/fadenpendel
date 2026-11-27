@@ -5,9 +5,15 @@ final float UI_CONTAINER_MARGIN = 12.5;
 class UIContainer implements UIElement {
     public ArrayList<UIElement> elements = new ArrayList();
     public PVector position;
+    public boolean opaque = false;
 
     public UIContainer(PVector position) {
         this.position = position;
+    }
+
+    public UIContainer(PVector position, boolean opaque) {
+        this.position = position;
+        this.opaque = opaque;
     }
 
     public PVector dimensions(Camera camera) {
@@ -42,7 +48,7 @@ class UIContainer implements UIElement {
         stroke(THEME_PANEL_EDGE);
         strokeWeight(0.5);
         PVector dimensions = dimensions(camera);
-        rect(this.position.x, this.position.y, dimensions.x, dimensions.y, UI_CONTAINER_BORDER_RADIUS);
+        if (!opaque) rect(this.position.x, this.position.y, dimensions.x, dimensions.y, UI_CONTAINER_BORDER_RADIUS);
         
         float height = UI_CONTAINER_PADDING.y;
         for (UIElement e : this.elements) {

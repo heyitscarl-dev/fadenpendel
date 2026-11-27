@@ -27,6 +27,7 @@ UIOverlay quantityOverlay = new UIOverlay();
 UIOverlay contactOverlay = new UIOverlay();
 
 Selectable selected = null;
+Selectable pselected = null;
 
 float simTime = 0.0;                  // vergangene Simulationszeit (s)
 final float CONTACT_LIFETIME = 0.3;   // Sichtbarkeit eines Kontakts nach der letzten Berührung (s)
@@ -35,6 +36,8 @@ float last;
 
 boolean running = false;
 boolean doStep = false;
+
+UIContainer ctnMenu = null;
 
 void setup() {
   // Initialisiert die UI
@@ -45,7 +48,7 @@ void setup() {
   ctnEditor.elements.add(btnEditor);
   defaultOverlay.elements.add(controls);
   defaultOverlay.elements.add(ctnEditor);
-  
+
   values.position.x += 50 + controls.dimensions(cam).x;
   values.elements.add(btnAirResistance);
   defaultOverlay.elements.add(values);
@@ -103,10 +106,27 @@ void draw() {
     initial = env.copy();
     lastEditorState = btnEditor.state;
   }
+  if (selected != null && (ctnMenu == null || pselected != selected)) {
+    defaultOverlay.elements.remove(ctnMenu);
+    PVector position = null;
+    if (selected instanceof Body) position = ((Body) selected).position;
+    if (selected instanceof Spring) position = ((Spring) selected).midpoint();
+    position = cam.worldToScreen(position);
+
+    ctnMenu = new UIContainer(position);
+    ctnMenu.elements.add(new Toggle(false, "\\text{Text}"));
+    ctnMenu.elements.add(new Toggle(false, "\\text{Text}"));
+    defaultOverlay.elements.add(ctnMenu);
+  } else if (selected == null && ctnMenu != null) {
+    defaultOverlay.elements.remove(ctnMenu);
+    ctnMenu = null;
+  }
 
   cam.leave();
 
   defaultOverlay.drawToScreen(cam);
+
+  pselected = selected;
 }
 
 Body getBodyAt(PVector world) {

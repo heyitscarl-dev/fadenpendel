@@ -6,7 +6,6 @@ class Display {
 
     void draw(Camera cam) {
         cam.enter();
-        background(THEME_BACKGROUND);
 
         for (Spring s : env.getSprings()) s.draw(cam);
 

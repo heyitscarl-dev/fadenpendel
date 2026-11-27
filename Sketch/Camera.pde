@@ -20,6 +20,8 @@ class Camera {
   float x, y;
   float zoom;
 
+  boolean active = false;
+
   void drawLabel(String text, PVector attachment) {
     latex(text, attachment.x, attachment.y);
   }
@@ -70,11 +72,83 @@ class Camera {
     this.zoom = 50;
   }
 
+  PVector screenToWorld(PVector screen) {
+    return new PVector((screen.x - width / 2) / zoom + x, -(screen.y - height / 2) / zoom + y);
+  }
+
+  float log10 (float x) {
+    return (log(x) / log(10));
+  }
+
+  // Abstand zwischen zwei Grid-Linien in Welt-Koordinaten (Zweierpotenz).
+  float gridStep() {
+    float target = 50 / zoom; // Grid Linien sollten ca. 50 px auseinander sein
+    return pow(2, floor(log(target) / log(2)));
+  }
+
+  // Nächster Schnittpunkt des Grids zu einer Position in Welt-Koordinaten.
+  PVector closestGridPoint(PVector position) {
+    float step = gridStep();
+    return new PVector(
+      round(position.x / step) * step,
+      round(position.y / step) * step
+    );
+  }
+
+  void drawGrid() {
+    boolean before = this.active;
+    enter();
+
+    float step = gridStep();
+
+    int majorEvery = 10;
+
+    // Minimal und maximal sichtbare welt koordinaten
+    float minX = -(width / zoom) + this.x;
+    float maxX = (width / zoom) + this.x;
+    float minY = -(height / zoom) + this.y;
+    float maxY = (height / zoom) + this.y;
+
+    int firstX = floor(minX / step);
+    int lastX = ceil(maxX / step);
+
+    for (int i = firstX; i <= lastX; i++) {
+      float x = i * step;
+      if (i % majorEvery == 0) {
+        this.strokeWeight(1.5);
+        stroke(50, 50, 50, 160);
+      } else {
+        this.strokeWeight(0.5);
+        stroke(50, 50, 50, 70);
+      }
+      line(x, minY, x, maxY);
+    }
+
+    int firstY = floor(minY / step);
+    int lastY = ceil(maxY / step);
+
+    for (int i = firstY; i <= lastY; i++) {
+      float y = i * step;
+      if (i % majorEvery == 0) {
+        this.strokeWeight(1.5);
+        stroke(50, 50, 50, 160);
+      } else {
+        this.strokeWeight(0.5);
+        stroke(50, 50, 50, 70);
+      }
+      line(minX, y, maxX, y);
+    }
+
+    if (!before) leave();
+  }
+
   void enter() {
+    if (active) return;
     pushMatrix();
     translate(width / 2, height / 2);  // den Ursprung auf die Bildmitte setzen
     scale(zoom, -zoom);
     translate(-x, -y);
+    this.active = true;
   }
   
   void strokeWeight(float w) {
@@ -82,7 +156,9 @@ class Camera {
   }
 
   void leave() {
+    if (!active) return;
     popMatrix();
+    this.active = false;
   }
 
   void text(String s, float x, float y) {

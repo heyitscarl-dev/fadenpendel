@@ -17,6 +17,9 @@ Toggle btnDrawQuantities = new Toggle(true, "\\text{Quantities}");
 Toggle btnDrawContacts = new Toggle(true, "\\text{Contacts}");
 Toggle btnAirResistance = new Toggle(true, "\\text{Drag}");
 
+UIContainer ctnEditor = new UIContainer(new PVector(1280 - 117.0 - 50.0, 50));
+Toggle btnEditor = new Toggle(true, "\\text{Edit}");
+
 UIOverlay velocityOverlay = new UIOverlay();
 UIOverlay forceOverlay = new UIOverlay();
 UIOverlay quantityOverlay = new UIOverlay();
@@ -36,7 +39,9 @@ void setup() {
   controls.elements.add(btnDrawForces);
   controls.elements.add(btnDrawQuantities);
   controls.elements.add(btnDrawContacts);
+  ctnEditor.elements.add(btnEditor);
   defaultOverlay.elements.add(controls);
+  defaultOverlay.elements.add(ctnEditor);
   
   values.position.x += 50 + controls.dimensions(cam).x;
   values.elements.add(btnAirResistance);
@@ -71,9 +76,14 @@ void draw() {
     tick(STEP / speed); // (siehe Sketch/Simulation.pde)
     accumulator -= STEP / speed;
   }
-  
+
+  background(THEME_BACKGROUND);
+  if (btnEditor.state) cam.drawGrid();
+  if (btnEditor.state) running = false;
+
   display.draw(cam);
   cam.enter();
+
   if (btnDrawForces.state) {
     forceOverlay.drawToScreen(cam);
   }
@@ -86,6 +96,7 @@ void draw() {
   if (btnDrawContacts.state) {
     contactOverlay.drawToScreen(cam);
   }
+
   cam.leave();
 
   defaultOverlay.drawToScreen(cam);
@@ -105,7 +116,7 @@ void mouseWheel(MouseEvent e) {
 }
 
 void keyPressed() {
-  if (key == ' ') {
+  if (key == ' ' && !btnEditor.state) {
     running = !running;
   }
 

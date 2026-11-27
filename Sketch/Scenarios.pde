@@ -144,6 +144,23 @@ class UnequalCollision extends Scenario {
   }
 }
 
+// 8) Trampolin
+class Trampolin extends Scenario {
+  Trampolin() {
+    Body previous = anchor(-4, 3);
+    for (int i = 1; i <= 49; i++) {
+      Body m = mass("m_" + i, 1.0, 0.15, new PVector(-4 + i * 0.8, 3));
+      if (i == 4 || i == 5) {
+        m.velocity = new PVector(0, 2.0);
+      }
+      thread(previous, m);
+      previous = m;
+    Body a = anchor(-4 + 50 * 0.8, 3);
+    thread (previous, a);
+    }
+  }
+}
+
 // Erzeugt das Szenario mit der Nummer `index` (Taste 1–8).
 Environment createScenario(int index) {
   switch (index) {
@@ -155,6 +172,7 @@ Environment createScenario(int index) {
     case 6: return new SpringOscillator();
     case 7: return new Chain();
     case 8: return new UnequalCollision();
+    case 9: return new Trampolin();
     default: return null;
   }
 }

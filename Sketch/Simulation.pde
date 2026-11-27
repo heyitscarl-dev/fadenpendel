@@ -108,41 +108,53 @@ void tick(float dt) {
         
         body.clearForces();
 
+        
         // Beschleunigung
         PVector a = res.div(body.mass);
-        
-        // Geschwindigkeits aenderung
+
+        // Geschwindigkeitsänderung
         PVector dv = a.mult(dt);
- 
-        //Geschwindigkeits aenderung auf Geschwindigkeit addieren
+
         body.velocity = body.velocity.add(dv);
-        
-        // Zurueckgelegte Strecke
+
+        // Zurückgelegte Strecke
         PVector dp = PVector.mult(body.velocity, dt);
+
+        // Position aktualisieren
+        body.position = body.position.add(dp);
+
+        //Energien reseten
+        body.ekin = 0.0;
+        body.epot = 0.0;
+        body.espann = 0.0;
         
-        // Energie
+        // Kinetische Energie
         body.ekin = 0.5 * body.mass * sq(body.velocity.mag());
 
+        // Potenzielle Energie
         for (Spring spring : env.getSprings()) {
             if (spring.b == body && spring.a.fixed) {
 
-            // Y-Wert der Ruhelage
-            body.yruhe = spring.a.position.y + spring.length + (body.mass * env.gravity / spring.stiffness);
+                body.yruhe = spring.a.position.y - spring.length - (body.mass * env.gravity / spring.stiffness);
 
-            // Spannenergie
-            float deltaL = spring.length() - spring.length;
-            body.espann = 0.5 * spring.stiffness * sq(deltaL);
-
-            // Potenzielle Energie
-            body.epot = body.mass * env.gravity * (body.yruhe - body.position.y);
-
-            break;
+                body.epot = body.mass * env.gravity * (body.position.y - body.yruhe);
             }
         }
-    
 
-        // Neue Position
-        body.position = body.position.add(dp);
+        // Spannenergie
+        body.espann = 0;
+
+        for (Spring spring : env.getSprings()) {
+            if (spring.a == body || spring.b == body) {
+
+                float deltaL = spring.length() - spring.length;
+
+                body.espann += 0.5
+                    * spring.stiffness * sq(deltaL);
+            }
+        }
+        
+        body.epot =  body.epot + body.espann;
     }
 }
 

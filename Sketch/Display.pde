@@ -53,7 +53,8 @@ class Display {
                 text("Espan Body " + k + "= " + round(b1.espann * 100.0)/100.0 + "J", width - 360, height - (15 + i*15));
                 
                 k++;
-            }
+                //System.out.println(b1.ekin + b1.epot+ b1.espann);
+           }
         }
     }
 }

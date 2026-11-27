@@ -146,6 +146,13 @@ void mousePressed() {
 }
 
 void mouseDragged() {
+  if (btnEditor.state && selected instanceof Body) {
+    Body b = (Body) selected;
+    PVector mouse = cam.screenToWorld(new PVector(mouseX, mouseY));
+    PVector updated = (keyCode == SHIFT && keyPressed) ? mouse : cam.closestGridPoint(mouse);
+    b.position = updated;
+    return;
+  }
   cam.handleDrag();
 }
 
@@ -175,6 +182,7 @@ void keyPressed() {
       running = false;
       contactOverlay.elements.clear();
       simTime = 0;
+      selected = null;
     }
   }
 

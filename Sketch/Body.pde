@@ -59,6 +59,14 @@ class Body implements UILabel {
     return copy;
   }
 
+  void drawSelection(Camera camera) {
+    float gap = 4 / camera.zoom;          // 4 px gap at every zoom level
+    fill(color(THEME_SELECTION, 100));
+    stroke(color(THEME_SELECTION));
+    camera.strokeWeight(1.5);
+    rect(position.x - (radius + gap), position.y - (radius + gap), 2 * (radius + gap), 2 * (radius + gap));
+  }
+
   void setPosition(PVector updated) {
     this.position = updated;
   }

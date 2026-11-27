@@ -7,14 +7,19 @@ class Display {
     void draw(Camera cam) {
         cam.enter();
 
-        for (Spring s : env.getSprings()) s.draw(cam);
+        for (Spring s : env.getSprings()) {
+            s.draw(cam);
+        }
 
         for (Body b : env.getBodies()) {
-            stroke(strokeBody);
             fill(fillBody);
+            stroke(strokeBody);
+            if (b == selected) {  }
             cam.strokeWeight(1);
             b.draw(cam);
         }
+
+        if (selected != null) selected.drawSelection(cam);
 
         forceOverlay.elements.clear();
         velocityOverlay.elements.clear();

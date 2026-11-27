@@ -29,10 +29,12 @@ class UIContainer implements UIElement {
             && y >= position.y && y <= position.y + dimensions.y;
     }
 
-    void handleClick(Camera camera, PVector position) {
+    boolean handleClick(Camera camera, PVector position) {
         if (contains(camera, position.x, position.y)) {
             elements.forEach(e -> e.handleClick(camera, position));
+            return true;
         }
+        return false;
     }
 
     public void drawToScreen(Camera camera, PVector _position) { // `_position` wird ignoriert, da sich Container selber positionieren.

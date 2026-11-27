@@ -13,7 +13,11 @@ class UIOverlay {
         });
     }
 
-    public void handleClick(Camera camera, PVector position) {
-        elements.forEach(e -> e.handleClick(camera, position));
+    public boolean handleClick(Camera camera, PVector position) {
+        boolean handled = false;
+        for (UIElement e : elements) {
+            if (e.handleClick(camera, position)) handled = true;
+        }
+        return handled;
     }
 }

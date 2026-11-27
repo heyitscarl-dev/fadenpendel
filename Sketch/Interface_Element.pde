@@ -3,7 +3,7 @@ static final float LABEL_SIZE = 16f;
 interface UIElement {
     void drawToScreen(Camera camera, PVector position);
     PVector dimensions(Camera camera);
-    void handleClick(Camera camera, PVector position);
+    boolean handleClick(Camera camera, PVector position);
     default boolean visible() { return true; }
 }
 
@@ -21,7 +21,7 @@ interface UILabel extends UIElement {
         return new PVector(label.getIconWidth(), label.getIconHeight());
     }
 
-    default void handleClick(Camera camera, PVector position) {}
+    default boolean handleClick(Camera camera, PVector position) { return false; }
 }
 
 interface UIOffsetLabel extends UILabel {
@@ -57,7 +57,7 @@ interface UIArrow extends UIOffsetLabel {
         return new PVector(abs(vector().x), abs(vector().y));
     }
 
-    default void handleClick(Camera camera, PVector position) {}
+    default boolean handleClick(Camera camera, PVector position) { return false; }
     default void drawToScreen(Camera camera, PVector _position) {
         float len = vector().mag();
         if (len < 1e-6) return;
@@ -114,8 +114,12 @@ class Toggle implements UIElement {
         this.label = latexIcon(label, LABEL_SIZE);
     }
 
-    void handleClick(Camera camera, PVector position) {
-        if (contains(position.x, position.y)) toggle();
+    boolean handleClick(Camera camera, PVector position) {
+        if (contains(position.x, position.y)) {
+            toggle();
+            return true;
+        }
+        return false;
     }
 
     void toggle() {
@@ -186,7 +190,7 @@ class Contact implements UIElement {
     }
 
     PVector dimensions(Camera camera) { return null; }
-    void handleClick(Camera camera, PVector position) {}
+    boolean handleClick(Camera camera, PVector position) { return false; }
     void drawToScreen(Camera camera, PVector _position) {
         push(); // Stil nicht an nachfolgende Zeichnungen weitergeben
         noStroke();
@@ -198,6 +202,6 @@ class Contact implements UIElement {
 
 class Pill implements UIElement {
     PVector dimensions(Camera camera) { return null; }
-    void handleClick(Camera camera, PVector position) {}
+    boolean handleClick(Camera camera, PVector position) { return false; }
     void drawToScreen(Camera camera, PVector position) {}
 }

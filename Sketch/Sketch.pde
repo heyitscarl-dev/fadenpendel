@@ -18,12 +18,14 @@ Toggle btnDrawContacts = new Toggle(true, "\\text{Contacts}");
 Toggle btnAirResistance = new Toggle(true, "\\text{Drag}");
 
 UIContainer ctnEditor = new UIContainer(new PVector(1280 - 117.0 - 50.0, 50));
-Toggle btnEditor = new Toggle(true, "\\text{Edit}");
+Toggle btnEditor = new Toggle(false, "\\text{Edit}");
 
 UIOverlay velocityOverlay = new UIOverlay();
 UIOverlay forceOverlay = new UIOverlay();
 UIOverlay quantityOverlay = new UIOverlay();
 UIOverlay contactOverlay = new UIOverlay();
+
+Body selected = null;
 
 float simTime = 0.0;                  // vergangene Simulationszeit (s)
 final float CONTACT_LIFETIME = 0.3;   // Sichtbarkeit eines Kontakts nach der letzten Berührung (s)
@@ -102,8 +104,20 @@ void draw() {
   defaultOverlay.drawToScreen(cam);
 }
 
+Body getBodyAt(PVector world) {
+  for (Body b : env.bodies) {
+    float distance = PVector.dist(world, b.position());
+    if (distance <= b.radius) {
+      return b;
+    }
+  }
+  return null;
+}
+
 void mousePressed() {
-  defaultOverlay.handleClick(cam, new PVector(mouseX, mouseY));
+  PVector mouse = new PVector(mouseX, mouseY);
+  if (defaultOverlay.handleClick(cam, mouse)) return;
+  selected = getBodyAt(cam.screenToWorld(mouse));
 }
 
 void mouseDragged() {
@@ -141,5 +155,9 @@ void keyPressed() {
 
   if (!running && keyCode == ENTER) {
     doStep = true;
+  }
+
+  if (keyCode == TAB) {
+    btnEditor.state = !btnEditor.state;
   }
 }

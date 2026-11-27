@@ -37,7 +37,6 @@ class Display {
         }
         for (Spring s : env.getSprings()) {
             quantityOverlay.elements.add(s);
-            return; // !!
         }
         
         cam.leave();

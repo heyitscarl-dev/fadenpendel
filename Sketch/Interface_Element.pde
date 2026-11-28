@@ -17,7 +17,7 @@ interface ScreenSpaceElement {
 }
 
 class Toggle implements ScreenSpaceElement {
-    final float WIDTH   = 50;
+    final float WIDTH   = 40;
     final float HEIGHT  = 25;
     
     boolean state;
@@ -29,21 +29,32 @@ class Toggle implements ScreenSpaceElement {
     }
 
     void animate() {
-        
+        float target = state ? 1.0 : 0.0;
+        animation += (target - animation) * 0.2;
     }
 
     void drawToScreen(Camera camera, Rectangle bounds) {
         animate();
 
-        camera.strokeWeight(THEME_TOGGLE_STROKE_WEIGHT);
+        strokeWeight(THEME_TOGGLE_STROKE_WEIGHT);
         stroke(THEME_TOGGLE_STROKE);
 
         fill(lerpColor(THEME_TOGGLE_TRACK_OFF, THEME_TOGGLE_TRACK_ON, animation));
-        rect(bounds.position.x, bounds.position.y, WIDTH, HEIGHT, HEIGHT / 2);
+        rect(bounds.position.x, bounds.position.y, bounds.size.x, bounds.size.y, bounds.size.y / 2);
+
+        fill(lerpColor(THEME_TOGGLE_KNOB_OFF, THEME_TOGGLE_KNOB_ON, animation));
+        float offset = 0.1;
+        float radius = bounds.size.y * 0.5;
+        float radiusRelative = radius / bounds.size.x;
+        PVector left = new PVector(radiusRelative - offset, 0.5);
+        PVector right = new PVector(1.0 - (radiusRelative - offset), 0.5);
+        PVector point = PVector.lerp(left, right, animation);
+        PVector centre = bounds.absolute(point);
+        circle(centre.x, centre.y, 2 * radius);
     }
 
     boolean handleMouse(PVector position, Rectangle bounds) {
-        System.out.println("HEY");
+        state = !state;
         return true;
     }
 }

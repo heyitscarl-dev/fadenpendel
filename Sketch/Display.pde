@@ -1,3 +1,5 @@
+final float BOUNDING_BOX_GAP = 4.0;
+
 class Display {
     int strokeBody = color(0);
     int fillBody = color(0.9 * 255);
@@ -6,22 +8,27 @@ class Display {
 
     void draw(Camera cam) {
         cam.enter();
-        background(THEME_BACKGROUND);
 
-        for (Spring s : env.getSprings()) s.draw(cam);
+        for (Spring s : env.getSprings()) {
+            s.draw(cam);
+        }
 
         for (Body b : env.getBodies()) {
-            stroke(strokeBody);
             fill(fillBody);
+            stroke(strokeBody);
+            if (b == selected) {  }
             cam.strokeWeight(1);
             b.draw(cam);
         }
+
+        if (selected != null) selected.drawBounding(cam, cam.screenToWorld(BOUNDING_BOX_GAP));
 
         forceOverlay.elements.clear();
         velocityOverlay.elements.clear();
         quantityOverlay.elements.clear();
         for (Body b : env.getBodies()) {
             if (b.fixed == true) continue; // skip fixed bodies
+            if (selected != null && selected != b) continue;
             velocityOverlay.elements.add(b.toVelocityArrow());
             quantityOverlay.elements.add(b);
             for (Force f : b.lastForces) {

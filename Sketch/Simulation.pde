@@ -67,8 +67,8 @@ void tick(float dt) {
 
     for (Body body : env.getBodies()) {    
         if (body.fixed) {
-        body.clearForces();
-        continue;
+            body.clearForces();
+            continue;
         }
 
         // Kräfte

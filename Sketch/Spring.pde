@@ -1,6 +1,6 @@
 final float THREAD_STIFFNESS = 1e5;
 
-class Spring implements UIOffsetLabel {
+class Spring implements UIOffsetLabel, Selectable {
     public static final int PEAKS_PER_DISTANCE = 2;
 
     float stiffness;
@@ -78,18 +78,20 @@ class Spring implements UIOffsetLabel {
 
     public void draw(Camera cam) {
         stroke(0);
-        if (this.stiffness >= 500) {
+        if (this.stiffness >= THREAD_STIFFNESS) {
             draw_as_line(cam);
             return;
         }
         draw_as_spring(cam);
     }
 
+    final float SPRING_AMPLITUDE = 0.2;
+
     private void draw_as_spring(Camera cam) {
         cam.strokeWeight(1);
 
         int steps = int(5 * length);
-        float amplitude = 0.2;
+        float amplitude = SPRING_AMPLITUDE;
 
         PVector delta = PVector.sub(b.position, a.position);
         float len = PVector.dist(b.position, a.position);
@@ -136,5 +138,24 @@ class Spring implements UIOffsetLabel {
         float length = sqrt(s1*s1+s2*s2);
 
         return length;
+    }
+
+    PVector midpoint() {
+        return PVector.lerp(this.a.position, this.b.position, 0.5);
+    }
+
+    void drawBounding(Camera camera, float gap) {
+        float rad = PVector.sub(b.position, a.position).heading();
+        float width =  (this.stiffness >= THREAD_STIFFNESS) ? 0.5 : (2 * SPRING_AMPLITUDE);
+        PVector midpoint = PVector.lerp(a.position, b.position, 0.5);
+        pushMatrix();
+        translate(midpoint.x, midpoint.y);
+        rotate(rad);
+        fill(color(THEME_SELECTION, 100));
+        stroke(color(THEME_SELECTION));
+        rectMode(CENTER);
+        rect(0, 0, length(), width + 2 * gap);
+        rectMode(CORNER);
+        popMatrix();
     }
 }

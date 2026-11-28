@@ -14,7 +14,7 @@ class VelocityArrow implements UIArrow {
   }
 }
 
-class Body implements UILabel {
+class Body implements UILabel, Selectable {
   String identifier;
   float mass;
   float radius;
@@ -57,6 +57,13 @@ class Body implements UILabel {
     copy.position = position.copy();
     copy.velocity = velocity.copy();
     return copy;
+  }
+
+  void drawBounding(Camera camera, float gap) {
+    fill(color(THEME_SELECTION, 100));
+    stroke(color(THEME_SELECTION));
+    camera.strokeWeight(1.5);
+    rect(position.x - (radius + gap), position.y - (radius + gap), 2 * (radius + gap), 2 * (radius + gap));
   }
 
   void setPosition(PVector updated) {

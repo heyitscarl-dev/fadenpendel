@@ -5,9 +5,15 @@ final float UI_CONTAINER_MARGIN = 12.5;
 class UIContainer implements UIElement {
     public ArrayList<UIElement> elements = new ArrayList();
     public PVector position;
+    public boolean opaque = false;
 
     public UIContainer(PVector position) {
         this.position = position;
+    }
+
+    public UIContainer(PVector position, boolean opaque) {
+        this.position = position;
+        this.opaque = opaque;
     }
 
     public PVector dimensions(Camera camera) {
@@ -29,10 +35,12 @@ class UIContainer implements UIElement {
             && y >= position.y && y <= position.y + dimensions.y;
     }
 
-    void handleClick(Camera camera, PVector position) {
+    boolean handleClick(Camera camera, PVector position) {
         if (contains(camera, position.x, position.y)) {
             elements.forEach(e -> e.handleClick(camera, position));
+            return true;
         }
+        return false;
     }
 
     public void drawToScreen(Camera camera, PVector _position) { // `_position` wird ignoriert, da sich Container selber positionieren.
@@ -40,12 +48,33 @@ class UIContainer implements UIElement {
         stroke(THEME_PANEL_EDGE);
         strokeWeight(0.5);
         PVector dimensions = dimensions(camera);
-        rect(this.position.x, this.position.y, dimensions.x, dimensions.y, UI_CONTAINER_BORDER_RADIUS);
+        if (!opaque) rect(this.position.x, this.position.y, dimensions.x, dimensions.y, UI_CONTAINER_BORDER_RADIUS);
         
         float height = UI_CONTAINER_PADDING.y;
         for (UIElement e : this.elements) {
             e.drawToScreen(camera, PVector.add(position, new PVector(UI_CONTAINER_PADDING.x, height)));
             height += e.dimensions(camera).y + UI_CONTAINER_MARGIN;
         }
+    }
+}
+
+class Inspector extends UIContainer {
+    Inspector(Selectable selectable) {
+        super(new PVector(0, 0), true);
+        if (selectable instanceof Body) {
+            Body body = (Body) selectable;
+            this.position = cam.worldToScreen(body.position);
+            this.elements.add(new Pill("m=", "" + body.mass, "\\,\\mathrm{kg}"));
+            this.elements.add(new Pill("r=", "" + body.radius, "\\,\\mathrm m"));
+        }
+        if (selectable instanceof Spring) {
+            Spring spring = (Spring) selectable;
+            this.position = cam.worldToScreen(spring.midpoint());
+            this.elements.add(new Pill("k=", "" + spring.stiffness, "\\,\\frac{\\mathrm N}{\\mathrm m}"));
+        }
+    }
+
+    void tick() {
+        
     }
 }

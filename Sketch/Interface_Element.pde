@@ -3,8 +3,12 @@ static final float LABEL_SIZE = 16f;
 interface UIElement {
     void drawToScreen(Camera camera, PVector position);
     PVector dimensions(Camera camera);
-    void handleClick(Camera camera, PVector position);
+    boolean handleClick(Camera camera, PVector position);
     default boolean visible() { return true; }
+    // Wird nur für das Element mit Fokus aufgerufen (siehe `focused` in Sketch.pde).
+    // true = Taste verbraucht, keine weiteren Shortcuts.
+    default boolean handleKey(char key, int keyCode) { return false; }
+    default void tick() {}
 }
 
 interface UILabel extends UIElement {
@@ -21,7 +25,7 @@ interface UILabel extends UIElement {
         return new PVector(label.getIconWidth(), label.getIconHeight());
     }
 
-    default void handleClick(Camera camera, PVector position) {}
+    default boolean handleClick(Camera camera, PVector position) { return false; }
 }
 
 interface UIOffsetLabel extends UILabel {
@@ -57,7 +61,7 @@ interface UIArrow extends UIOffsetLabel {
         return new PVector(abs(vector().x), abs(vector().y));
     }
 
-    default void handleClick(Camera camera, PVector position) {}
+    default boolean handleClick(Camera camera, PVector position) { return false; }
     default void drawToScreen(Camera camera, PVector _position) {
         float len = vector().mag();
         if (len < 1e-6) return;
@@ -114,8 +118,12 @@ class Toggle implements UIElement {
         this.label = latexIcon(label, LABEL_SIZE);
     }
 
-    void handleClick(Camera camera, PVector position) {
-        if (contains(position.x, position.y)) toggle();
+    boolean handleClick(Camera camera, PVector position) {
+        if (contains(position.x, position.y)) {
+            toggle();
+            return true;
+        }
+        return false;
     }
 
     void toggle() {
@@ -186,7 +194,7 @@ class Contact implements UIElement {
     }
 
     PVector dimensions(Camera camera) { return null; }
-    void handleClick(Camera camera, PVector position) {}
+    boolean handleClick(Camera camera, PVector position) { return false; }
     void drawToScreen(Camera camera, PVector _position) {
         push(); // Stil nicht an nachfolgende Zeichnungen weitergeben
         noStroke();
@@ -196,8 +204,132 @@ class Contact implements UIElement {
     }
 }
 
+/* Ein Textfeld, dessen Inhalt live als LaTeX gesetzt wird.
+ * Klick hinein = Fokus, Enter/Escape oder Klick daneben = Fokus weg.
+ * Solange die Eingabe kein gültiges LaTeX ist (z. B. "\frac{"),
+ * wird der Quelltext grau angezeigt. */
 class Pill implements UIElement {
-    PVector dimensions(Camera camera) { return null; }
-    void handleClick(Camera camera, PVector position) {}
-    void drawToScreen(Camera camera, PVector position) {}
+    final float MIN_WIDTH = 50;
+    final float MIN_HEIGHT = 25;
+    final float INNER_PADDING = 8;
+
+    String prefix = "";
+    String suffix = "";
+    String text = "";
+    TeXIcon icon = null;  // null = Text ist (noch) kein gültiges LaTeX
+    TeXIcon suffixIcon = null;
+
+    PVector lastPosition = null;
+
+    Pill() {}
+
+    Pill(String prefix, String text, String suffix) {
+        this.prefix = prefix;
+        this.suffix = suffix;
+        setText(text);
+    }
+
+    void setText(String text) {
+        this.text = text;
+        try {
+            // Nicht über latexIcon(): der Cache würde sonst jeden Tastendruck speichern.
+            icon = new TeXFormula(prefix + text).createTeXIcon(TeXConstants.STYLE_DISPLAY, LABEL_SIZE);
+            suffixIcon = new TeXFormula(suffix).createTeXIcon(TeXConstants.STYLE_DISPLAY, LABEL_SIZE);
+            icon.setForeground(java.awt.Color.BLACK);
+            suffixIcon.setForeground(java.awt.Color.BLACK);
+        } catch (Exception e) {
+            icon = null;  // ParseException o. ä.: unvollständige Eingabe
+            suffixIcon = null;
+        }
+    }
+
+    boolean isFocused() { return focused == this; }
+
+    float contentWidth() {
+        float a = icon != null ? icon.getIconWidth() : 0;
+        float b = suffixIcon != null ? suffixIcon.getIconWidth() : 0;
+        if (max(a, b) != 0) return a + b;
+        textSize(12.5);
+        return textWidth(text);
+    }
+
+    float contentHeight() {
+        float a = icon != null ? icon.getIconHeight() : 12.5;
+        float b = suffixIcon != null ? suffixIcon.getIconHeight() : 12.5;
+        return max(a, b);
+    }
+
+    PVector dimensions(Camera camera) {
+        return new PVector(
+            max(MIN_WIDTH, contentWidth() + 2 * INNER_PADDING),
+            max(MIN_HEIGHT, contentHeight() + 2 * INNER_PADDING)
+        );
+    }
+
+    boolean contains(float x, float y) {
+        if (lastPosition == null) return false;
+        PVector d = dimensions(null);
+        return x >= lastPosition.x && x <= lastPosition.x + d.x
+            && y >= lastPosition.y && y <= lastPosition.y + d.y;
+    }
+
+    boolean handleClick(Camera camera, PVector position) {
+        if (contains(position.x, position.y)) {
+            focused = this;
+            return true;
+        }
+        return false;
+    }
+
+    boolean handleKey(char key, int keyCode) {
+        if (key == CODED) return true;  // Pfeiltasten, Shift, ... schlucken
+        if (key == ENTER || key == RETURN || key == ESC) {
+            focused = null;
+        } else if (key == BACKSPACE) {
+            if (text.length() > 0) setText(text.substring(0, text.length() - 1));
+        } else if (key >= ' ') {
+            setText(text + key);
+        }
+        return true;
+    }
+
+    void drawToScreen(Camera camera, PVector position) {
+        if (position == null) return;
+        lastPosition = position.copy();
+        PVector d = dimensions(camera);
+
+        fill(THEME_PANEL);
+        stroke(isFocused() ? THEME_SELECTION : THEME_PANEL_EDGE);
+        strokeWeight(isFocused() ? 1 : 0.5);
+        rect(position.x, position.y, d.x, d.y, UI_CONTAINER_BORDER_RADIUS);
+
+        float x = position.x + INNER_PADDING;
+        float bottom = position.y + (d.y + contentHeight()) / 2;  // vertikal zentriert
+        if (icon != null) {
+            camera.latexScreen(icon, x, bottom);
+        } else {
+            fill(120);
+            textSize(12.5);
+            textAlign(LEFT, BOTTOM);
+            text(text, x, bottom);
+        }
+
+        // Blinkender Cursor am Ende
+        if (isFocused() && millis() % 1000 < 500) {
+            float cx = x + contentWidth() + 2;
+            stroke(0);
+            strokeWeight(1);
+            line(cx, position.y + INNER_PADDING / 2, cx, position.y + d.y - INNER_PADDING / 2);
+        }
+
+        // Suffix
+        if (suffixIcon != null) {
+            camera.latexScreen(suffixIcon, x + icon.getIconWidth(), bottom);
+        } else {
+            fill(120);
+            textSize(12.5);
+            textAlign(LEFT, BOTTOM);
+            text(text, x + icon.getIconWidth(), bottom);
+        }
+    }
 }

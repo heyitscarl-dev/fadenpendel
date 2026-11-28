@@ -197,6 +197,7 @@ void keyPressed() {
     env = initial.copy();
     running = false;
     contactOverlay.elements.clear();
+    selected = null;
     simTime = 0;
   }
 

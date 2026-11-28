@@ -81,8 +81,8 @@ void draw() {
   // passieren müssen.
   accumulator += speed * dt;
   while (accumulator >= STEP) {
-    tick(STEP / speed); // (siehe Sketch/Simulation.pde)
-    accumulator -= STEP / speed;
+    tick(STEP); // (siehe Sketch/Simulation.pde)
+    accumulator -= STEP;
   }
 
   background(THEME_BACKGROUND);

@@ -16,10 +16,6 @@ void tick(float dt) {
 
     // !!! ERSTE IMPLEMENTIERUNG VON KOLLISION ÜBER IMPULSE
 
-    // Kontakte bleiben nach der letzten Berührung noch CONTACT_LIFETIME
-    // Sekunden (Simulationszeit) sichtbar.
-    contactOverlay.elements.removeIf(e -> simTime - ((Contact) e).since > CONTACT_LIFETIME);
-
     ArrayList<Body> bodies = env.getBodies();
     for (int i = 0; i < bodies.size(); i++) {
         Body b1 = bodies.get(i);
@@ -44,7 +40,6 @@ void tick(float dt) {
 
             // Mitte der Überlappung (stimmt auch bei ungleichen Radien)
             PVector contactPoint = PVector.add(b1.position, PVector.mult(normal, b1.radius - error / 2));
-            registerContact(b1, b2, contactPoint);
 
             float vRel = PVector.dot(PVector.sub(b2.velocity, b1.velocity), normal);
             if (vRel > 0) { // Körper entfernen sich bereits voneinander; Nichts tun
@@ -79,7 +74,7 @@ void tick(float dt) {
         color(255, 0, 0)
         )); // Gewichtskraft
 
-        if (btnAirResistance.state) {
+        if (true) {
             float velocity = body.velocity.mag();
             float dragFactor = -0.5 * 1.204 * 0.4 * PI * body.radius * body.radius * velocity; // nur 1x velocity, weil body.velocity später multipliziert wird
             PVector drag = PVector.mult(body.velocity, dragFactor);
@@ -119,17 +114,4 @@ void tick(float dt) {
         // Neue Position
         body.position = body.position.add(dp);
     }
-}
-
-// Frischt den Contact des Paares (a, b) auf oder legt einen neuen an.
-// So entsteht pro Berührung nur ein Punkt statt einem pro Tick.
-void registerContact(Body a, Body b, PVector position) {
-    for (UIElement e : contactOverlay.elements) {
-        Contact c = (Contact) e;
-        if (c.involves(a, b)) {
-            c.refresh(position);
-            return;
-        }
-    }
-    contactOverlay.elements.add(new Contact(a, b, position));
 }

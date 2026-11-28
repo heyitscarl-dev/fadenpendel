@@ -169,6 +169,15 @@ class Camera {
     this.active = false;
   }
 
+  // Führt das `lambda` mit Kameratransformation aus. Anschließend wird der 
+  // ursprüngliche Status wiederhergestellt.
+  void entered(Runnable lambda) {
+    boolean before = this.active;
+    this.enter();
+    try { lambda.run(); } // lambda.run() könnte eine Exception erzeugen. Try sorgt dafür, dass der Zustant immer zurückgesetzt wird.
+    finally { if (!before) this.leave(); }
+  }
+
   void text(String s, float x, float y) {
     pushMatrix();
     translate(x, y);

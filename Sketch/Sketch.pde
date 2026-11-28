@@ -8,23 +8,8 @@ Environment env = new NewtonPendulum();
 Camera cam = new Camera();
 Display display = new Display();
 
-UIOverlay defaultOverlay = new UIOverlay();
-UIContainer controls = new UIContainer(new PVector(50, 50));
-UIContainer values = new UIContainer(new PVector(50, 50));
-Toggle btnDrawVelocities = new Toggle(false, "\\text{Velocities}");
-Toggle btnDrawForces = new Toggle(false, "\\text{Forces}");
-Toggle btnDrawQuantities = new Toggle(true, "\\text{Quantities}");
-Toggle btnDrawContacts = new Toggle(true, "\\text{Contacts}");
-Toggle btnAirResistance = new Toggle(true, "\\text{Drag}");
-
-UIContainer ctnEditor = new UIContainer(new PVector(1280 - 117.0 - 50.0, 50));
-Toggle btnEditor = new Toggle(false, "\\text{Edit}");
-boolean lastEditorState = btnEditor.state;
-
-UIOverlay velocityOverlay = new UIOverlay();
-UIOverlay forceOverlay = new UIOverlay();
-UIOverlay quantityOverlay = new UIOverlay();
-UIOverlay contactOverlay = new UIOverlay();
+ScreenSpaceOverlay overlay = new ScreenSpaceOverlay();
+ScreenSpaceElement toggle = new Toggle();
 
 Selectable selected = null;
 Selectable pselected = null;
@@ -37,28 +22,15 @@ float last;
 boolean running = false;
 boolean doStep = false;
 
-UIContainer ctnMenu = null;
-
-UIElement focused = null;  // Element, das gerade Tastatureingaben bekommt (z. B. eine Pill)
-
 void setup() {
-  // Initialisiert die UI
-  controls.elements.add(btnDrawVelocities);
-  controls.elements.add(btnDrawForces);
-  controls.elements.add(btnDrawQuantities);
-  controls.elements.add(btnDrawContacts);
-  ctnEditor.elements.add(btnEditor);
-  defaultOverlay.elements.add(controls);
-  defaultOverlay.elements.add(ctnEditor);
-
-  values.position.x += 50 + controls.dimensions(cam).x;
-  values.elements.add(btnAirResistance);
-  defaultOverlay.elements.add(values);
-
   size(1280, 800);
   pixelDensity(2);
   
   initial = env.copy();
+
+  // Initialisiert die UI
+
+  overlay.add(toggle, TOP_LEFT, new PVector(50, 50));
 
   // Um dt (Δd; delta time), also die Zeitdifferenz der letzten Frames
   // zu berrechnen (wodurch die Simulation konstant und unabhängig von 
@@ -86,41 +58,9 @@ void draw() {
   }
 
   background(THEME_BACKGROUND);
-  if (btnEditor.state) cam.drawGrid();
-  if (btnEditor.state) running = false;
 
   display.draw(cam);
-  cam.enter();
-
-  if (btnDrawForces.state) {
-    forceOverlay.drawToScreen(cam);
-  }
-  if (btnDrawVelocities.state) {
-    velocityOverlay.drawToScreen(cam);
-  }
-  if (btnDrawQuantities.state) {
-    quantityOverlay.drawToScreen(cam);
-  }
-  if (btnDrawContacts.state) {
-    contactOverlay.drawToScreen(cam);
-  }
-  if (lastEditorState != btnEditor.state) {
-    initial = env.copy();
-    lastEditorState = btnEditor.state;
-  }
-  if (selected != null && (ctnMenu == null || pselected != selected)) {
-    defaultOverlay.elements.remove(ctnMenu);
-    ctnMenu = new Inspector(selected);
-    defaultOverlay.elements.add(ctnMenu);
-  } else if (selected == null && ctnMenu != null) {
-    defaultOverlay.elements.remove(ctnMenu);
-    ctnMenu = null;
-  }
-
-  cam.leave();
-
-  defaultOverlay.drawToScreen(cam);
-
+  overlay.drawToScreen(cam);
   pselected = selected;
 }
 
@@ -158,8 +98,6 @@ Spring getSpringAt(PVector world) {
 
 void mousePressed() {
   PVector mouseScreen = new PVector(mouseX, mouseY);
-  focused = null;  // Klick daneben nimmt den Fokus weg; eine Pill holt ihn sich in handleClick zurück
-  if (defaultOverlay.handleClick(cam, mouseScreen)) return;
   PVector mouseWorld = cam.screenToWorld(mouseScreen);
   selected = getBodyAt(mouseWorld);
   if (selected != null) return;
@@ -167,13 +105,6 @@ void mousePressed() {
 }
 
 void mouseDragged() {
-  if (btnEditor.state && selected instanceof Body) {
-    Body b = (Body) selected;
-    PVector mouse = cam.screenToWorld(new PVector(mouseX, mouseY));
-    PVector updated = (keyCode == SHIFT && keyPressed) ? mouse : cam.closestGridPoint(mouse);
-    b.position = updated;
-    return;
-  }
   cam.handleDrag();
 }
 
@@ -183,20 +114,13 @@ void mouseWheel(MouseEvent e) {
 }
 
 void keyPressed() {
-  // Hat ein Textfeld den Fokus, bekommt es alle Tasten, damit z. B. "1" nicht das Szenario wechselt.
-  if (focused != null && focused.handleKey(key, keyCode)) {
-    key = 0;  // sonst beendet Escape den Sketch
-    return;
-  }
-
-  if (key == ' ' && !btnEditor.state) {
+  if (key == ' ') {
     running = !running;
   }
 
   if (key == 'r') {
     env = initial.copy();
     running = false;
-    contactOverlay.elements.clear();
     selected = null;
     simTime = 0;
   }
@@ -208,7 +132,6 @@ void keyPressed() {
       env = scenario;
       initial = env.copy();
       running = false;
-      contactOverlay.elements.clear();
       simTime = 0;
       selected = null;
     }
@@ -216,9 +139,5 @@ void keyPressed() {
 
   if (!running && keyCode == ENTER) {
     doStep = true;
-  }
-
-  if (keyCode == TAB) {
-    btnEditor.state = !btnEditor.state;
   }
 }

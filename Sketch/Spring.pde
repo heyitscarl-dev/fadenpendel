@@ -1,6 +1,6 @@
 final float THREAD_STIFFNESS = 1e5;
 
-class Spring implements UIOffsetLabel, Selectable {
+class Spring implements Selectable {
     public static final int PEAKS_PER_DISTANCE = 2;
 
     float stiffness;
@@ -8,14 +8,6 @@ class Spring implements UIOffsetLabel, Selectable {
     float damping;
 
     Body a, b;
-
-    TeXIcon label(Camera camera) {
-        return latexIcon("l = " + round(length() * 10) / 10.0 + "\\,\\mathrm m", LABEL_SIZE);
-    }
-
-    // Das Label sitzt, wie bei den Pfeilen, mittig neben der Strecke a -> b.
-    PVector origin() { return a.position; }
-    PVector vector() { return PVector.sub(b.position, a.position); }
 
     Spring(float stiffness, Body a, Body b) {
         float zeta;

@@ -22,22 +22,6 @@ class Display {
         }
 
         if (selected != null) selected.drawBounding(cam, cam.screenToWorld(BOUNDING_BOX_GAP));
-
-        forceOverlay.elements.clear();
-        velocityOverlay.elements.clear();
-        quantityOverlay.elements.clear();
-        for (Body b : env.getBodies()) {
-            if (b.fixed == true) continue; // skip fixed bodies
-            if (selected != null && selected != b) continue;
-            velocityOverlay.elements.add(b.toVelocityArrow());
-            quantityOverlay.elements.add(b);
-            for (Force f : b.lastForces) {
-                forceOverlay.elements.add(f.scaled(FORCE_SCALE).toArrow());
-            }
-        }
-        for (Spring s : env.getSprings()) {
-            quantityOverlay.elements.add(s);
-        }
         
         cam.leave();
 

@@ -1,20 +1,4 @@
-class VelocityArrow implements UIArrow {
-  final int stroke = color(151, 66, 135);
-  PVector origin;
-  PVector vector;
-
-  PVector origin() { return origin; }
-  PVector vector() { return vector; }
-  int strokeColor() { return stroke; }
-  TeXIcon label(Camera camera) { return latexIcon("\\vec{v}=" + round(vector().mag() * 10) / 10.0 + "\\frac{\\mathrm m}{\\mathrm s}", LABEL_SIZE); }
-
-  VelocityArrow(PVector origin, PVector vector) {
-    this.origin = origin;
-    this.vector = vector;
-  }
-}
-
-class Body implements UILabel, Selectable {
+class Body implements Selectable {
   String identifier;
   float mass;
   float radius;
@@ -23,17 +7,6 @@ class Body implements UILabel, Selectable {
   ArrayList<Force> forces;
   ArrayList<Force> lastForces;
   public boolean fixed;
-
-  TeXIcon label(Camera camera) {
-    return latexIcon(identifier /* + "=" + round(mass * 10)/10.0 + "\\,\\mathrm kg" */, LABEL_SIZE * 0.825 / 50 * camera.zoom);
-  }
-
-  PVector anchor(Camera camera) {
-      TeXIcon label = label(camera);
-      float w = label.getIconWidth()  / camera.zoom;
-      float h = label.getIconHeight() / camera.zoom;
-      return new PVector(position.x - w / 2, position.y - h / 2);
-  }
 
   Body(String identifier, float mass, float radius, boolean fixed) {
     this.identifier = identifier;
@@ -110,9 +83,5 @@ class Body implements UILabel, Selectable {
       float x = position.x - radius + i * gap;
       line(x, position.y, x + h, position.y + h);
     }
-  }
-
-  VelocityArrow toVelocityArrow() {
-    return new VelocityArrow(position, velocity);
   }
 }

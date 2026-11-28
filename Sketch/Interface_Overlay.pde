@@ -71,5 +71,15 @@ class ScreenSpaceOverlay {
             e.element.drawToScreen(camera, e.bounds);
         }
     }
+
+    boolean handleMouse(PVector position) {
+        for (Entry e : this.entries) {
+            if (!e.bounds.contains(position)) continue;
+            if (e.element.handleMouse(position, e.bounds)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 

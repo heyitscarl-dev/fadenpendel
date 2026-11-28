@@ -98,6 +98,7 @@ Spring getSpringAt(PVector world) {
 
 void mousePressed() {
   PVector mouseScreen = new PVector(mouseX, mouseY);
+  if (overlay.handleMouse(mouseScreen)) return;
   PVector mouseWorld = cam.screenToWorld(mouseScreen);
   selected = getBodyAt(mouseWorld);
   if (selected != null) return;
